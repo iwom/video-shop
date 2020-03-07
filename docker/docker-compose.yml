@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:9.6-alpine
+    ports:
+      - "5432:5432/tcp"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=videostore
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20000k"
+        max-file: "1"
+    networks:
+      - video-network
+
+  service:
+    image: video-service
+    build:
+      context: ../service
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    restart: on-failure
+    networks:
+      - video-network
+
+  webclient:
+    image: video-webclient
+    build:
+      context: ../webclient
+      dockerfile: Dockerfile
+    ports:
+      - 8081:4200
+    networks:
+      - video-network
+
+volumes:
+  pgdata:
+
+networks:
+  video-network:
+    driver: bridge
