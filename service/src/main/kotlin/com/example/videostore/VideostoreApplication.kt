@@ -8,5 +8,4 @@ open class VideostoreApplication
 
 fun main(args: Array<String>) {
     runApplication<VideostoreApplication>(*args)
-    println("Hello Video Store")
 }
