@@ -15,12 +15,18 @@ import { ApiProvider } from "./services/api.provider";
 import { AngularMaterialModule } from './modules/material.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MovieListComponent } from './components/movie-list/movie-list.component';
+import { MovieCardComponent } from './components/movie-card/movie-card.component';
+import { CartComponent } from './components/cart/cart.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SignupComponent,
+    MovieListComponent,
+    MovieCardComponent,
+    CartComponent,
   ],
   imports: [
     BrowserModule,
