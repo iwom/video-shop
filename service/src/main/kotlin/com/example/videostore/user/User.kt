@@ -7,7 +7,7 @@ import javax.persistence.*
 @Table(name = "users")
 data class User(
     @Id
-    val uuid: UUID = UUID.randomUUID(),
+    val id: UUID = UUID.randomUUID(),
 
     @Enumerated(EnumType.STRING)
     val role: Role = Role.USER,
