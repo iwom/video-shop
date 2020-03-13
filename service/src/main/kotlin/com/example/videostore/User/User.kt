@@ -12,6 +12,7 @@ data class User(
     @Enumerated(EnumType.STRING)
     val role: Role,
 
+    @Column(unique = true)
     val email: String,
     val password: String
 ) {
