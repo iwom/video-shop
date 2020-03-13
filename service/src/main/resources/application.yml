@@ -5,8 +5,15 @@ spring:
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         hbm2ddl:
           import_files: import.sql
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/postgres
+    user: postgres
+    password: postgres
+    locations: classpath:db/migration
