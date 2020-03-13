@@ -1,4 +1,4 @@
-package com.example.videostore.User
+package com.example.videostore.user
 
 import org.springframework.data.repository.Repository
 import java.util.*

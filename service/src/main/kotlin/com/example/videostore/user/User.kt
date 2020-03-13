@@ -1,4 +1,4 @@
-package com.example.videostore.User
+package com.example.videostore.user
 
 import java.util.*
 import javax.persistence.*

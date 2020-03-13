@@ -1,4 +1,4 @@
-package com.example.videostore.User
+package com.example.videostore.user
 
 import com.example.videostore.infrastructure.ServiceException
 import org.springframework.http.HttpStatus
