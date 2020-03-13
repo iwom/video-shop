@@ -10,7 +10,7 @@ data class User(
     val uuid: UUID = UUID.randomUUID(),
 
     @Enumerated(EnumType.STRING)
-    val role: Role,
+    val role: Role = Role.USER,
 
     @Column(unique = true)
     val email: String,
