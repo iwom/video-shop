@@ -3,7 +3,7 @@ create table users
     id     uuid not null
         constraint users_pkey
             primary key,
-    email    varchar(255),
+    email    varchar(255) unique,
     password varchar(255),
     role     varchar(255)
 );
