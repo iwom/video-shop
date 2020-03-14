@@ -15,5 +15,9 @@ class UserService(
     fun getUserByEmail(email: String): User = userRepository.findByEmail(email)
             ?: throw ServiceException(HttpStatus.NOT_FOUND, "User with email: $email not found")
 
-    private fun addUser(user: User): User = userRepository.save(user)
+    fun addUser(user: User): User {
+        userRepository.findByEmail(user.email) ?: return userRepository.save(user)
+
+        throw ServiceException(HttpStatus.CONFLICT, "User with email: ${user.email} already exists")
+    }
 }
