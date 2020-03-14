@@ -9,7 +9,7 @@ import java.util.*
 class UserService(
     val userRepository: UserRepository
 ) {
-    fun getUserByUUID(id: UUID): User = userRepository.findById(id)
+    fun getUserById(id: UUID): User = userRepository.findById(id)
             ?: throw ServiceException(HttpStatus.NOT_FOUND, "User with id: $id not found")
 
     fun getUserByEmail(email: String): User = userRepository.findByEmail(email)
