@@ -15,5 +15,5 @@ class UserService(
     fun getUserByEmail(email: String): User = userRepository.findByEmail(email)
             ?: throw ServiceException(HttpStatus.NOT_FOUND, "User with email: $email not found")
 
-    fun addUser(user: User): User = userRepository.save(user)
+    private fun addUser(user: User): User = userRepository.save(user)
 }
