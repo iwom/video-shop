@@ -13,8 +13,11 @@ data class User(
     val role: Role = Role.USER,
 
     @Column(unique = true)
-    val email: String,
-    val password: String
+    val username: String = "",
+
+    @Column(unique = true)
+    val email: String = "",
+    val password: String = ""
 ) {
 
     enum class Role {
