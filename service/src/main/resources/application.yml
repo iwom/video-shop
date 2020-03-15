@@ -17,3 +17,8 @@ spring:
     user: postgres
     password: postgres
     locations: classpath:db/migration
+
+videoshop:
+  app:
+    jwtSecret: videoShopSecretKey
+    jwtExpirationMs: 86400000
