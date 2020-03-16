@@ -33,7 +33,6 @@ export class SignupComponent implements OnInit {
     );
     this.authService.register(user).subscribe(
       data => {
-        console.log(data);
         this.snackBar.open("Account created successfully!", "Dismiss", { duration: 3000 });
         this.router.navigate(['/login']);
       },
