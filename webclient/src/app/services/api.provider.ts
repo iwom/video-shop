@@ -6,8 +6,8 @@ export class ApiProvider {
   host = environment.host;
   paths = {
     root: () => `/`,
-    login: () => `${this.host}/login`,
-    signup: () => `${this.host}/signup`
+    signIn: () => `${this.host}/auth/signin`,
+    signUp: () => `${this.host}/auth/signup`
   };
   go() {
     return this.paths;

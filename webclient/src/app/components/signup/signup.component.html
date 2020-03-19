@@ -8,28 +8,33 @@
     </p>
 
     <mat-card-content>
-      <form>
+      <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
         <p>
           <mat-form-field>
-            <input matInput placeholder="Username">
+            <input matInput placeholder="Username" formControlName="username">
           </mat-form-field>
         </p>
 
         <p>
           <mat-form-field>
-            <input matInput placeholder="Email">
+            <input required type="email" matInput placeholder="Email" formControlName="email">
           </mat-form-field>
         </p>
 
         <p>
           <mat-form-field>
-            <input matInput placeholder="Password">
+            <input required type="password" matInput placeholder="Password" formControlName="password">
           </mat-form-field>
         </p>
 
         <p fxLayout="row" fxLayoutAlign="center">
-          <button mat-button>Sign up</button>
+          <button type="submit" mat-button>Sign up</button>
         </p>
+
+        <p fxLayout="row" fxLayoutAlign="center">
+          <button fxLayout="row" fxLayoutAlign="center" (click)="login()" mat-button>Go to login</button>
+        </p>
+
       </form>
     </mat-card-content>
 
