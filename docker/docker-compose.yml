@@ -28,7 +28,8 @@ services:
     ports:
       - 8080:8080
     restart: on-failure
-    network_mode: host
+    networks:
+      - video-network
 
   webclient:
     container_name: webclient
