@@ -22,3 +22,4 @@ videoshop:
   app:
     jwtSecret: videoShopSecretKey
     jwtExpirationMs: 86400000
+    omdbKey: ${OMDB_KEY}
