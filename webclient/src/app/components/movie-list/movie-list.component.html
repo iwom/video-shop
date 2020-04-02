@@ -1,1 +1,49 @@
-<p>movie-list works!</p>
+<script src="../../services/movie.service.ts"></script>
+<script src="../login/login.component.ts"></script>
+<mat-paginator [length]="length"
+               [pageSize]="pageSize"
+               [pageSizeOptions]="pageSizeOptions"
+               (page)="pageEvent = onPageChange($event)">
+</mat-paginator>
+
+<mat-grid-list [cols]="breakpoint" rowHeight="4:6" (window:resize)="onResize($event)" >
+  <mat-grid-tile *ngFor="let movie of movieList">
+    <div>
+      <mat-card class="card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-header-avatar">
+            <img class="card-header-avatar-image" src="{{movie.posterUrl}}" alt="Poster image"/>
+          </div>
+          <mat-card-title>
+            {{movie.title}}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{movie.director}} <br> {{movie.genre}} <br> {{movie.year}} <br> {{movie.runtime}}
+          </mat-card-subtitle>
+
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content style="text-align: justify; text-justify: inter-word; padding-top: 1rem;">
+          <p>
+            {{movie.plot.slice(0, 150)}} (...)
+          </p>
+        </mat-card-content>
+
+        <mat-divider></mat-divider>
+        <mat-card-actions>
+          <button mat-button>
+            <mat-icon>add_shopping_cart</mat-icon>
+            {{movie.price}} PLN
+          </button>
+          <button mat-button>More...</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<mat-paginator [length]="length"
+               [pageSize]="pageSize"
+               [pageSizeOptions]="pageSizeOptions"
+               (page)="pageEvent = onPageChange($event)">
+</mat-paginator>

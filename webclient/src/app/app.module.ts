@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MovieListComponent } from './components/movie-list/movie-list.component';
 import { MovieCardComponent } from './components/movie-card/movie-card.component';
 import { CartComponent } from './components/cart/cart.component';
+import { MovieService } from "./services/movie.service";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { CartComponent } from './components/cart/cart.component';
     FlexModule,
     BrowserAnimationsModule
   ],
-  providers: [authInterceptorProviders, ApiProvider],
+  providers: [authInterceptorProviders, ApiProvider, MovieService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

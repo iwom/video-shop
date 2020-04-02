@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
         this.tokenStorageService.saveToken(data.accessToken);
         this.tokenStorageService.saveUser(data);
         window.location.reload()
-
+        this.router.navigate(["/movies"]);
       },
       err => {
         console.error(err);

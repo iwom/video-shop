@@ -7,7 +7,7 @@ import { MovieListComponent } from "./components/movie-list/movie-list.component
 import { MovieCardComponent } from "./components/movie-card/movie-card.component";
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: '', pathMatch: 'full', redirectTo: 'movies' },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'cart', component: CartComponent},
