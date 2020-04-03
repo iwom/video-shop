@@ -39,8 +39,9 @@ export class MovieListComponent implements OnInit {
   }
 
   private resize(window: Window) {
-    if (window.innerWidth > 1200) { this.breakpoint = 4; } else
-    if (window.innerWidth > 800) { this.breakpoint = 2; } else
+    if (window.innerWidth > 1400) { this.breakpoint = 4; } else
+    if (window.innerWidth > 1100) { this.breakpoint = 3; } else
+    if (window.innerWidth > 900) { this.breakpoint = 2; } else
     { this.breakpoint = 1; }
   }
 

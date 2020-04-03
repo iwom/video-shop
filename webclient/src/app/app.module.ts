@@ -19,6 +19,8 @@ import { MovieListComponent } from './components/movie-list/movie-list.component
 import { MovieCardComponent } from './components/movie-card/movie-card.component';
 import { CartComponent } from './components/cart/cart.component';
 import { MovieService } from "./services/movie.service";
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { CartSidenavComponent } from './components/cart-sidenav/cart-sidenav.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { MovieService } from "./services/movie.service";
     MovieListComponent,
     MovieCardComponent,
     CartComponent,
+    OrderHistoryComponent,
+    CartSidenavComponent,
   ],
   imports: [
     BrowserModule,
