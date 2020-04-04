@@ -45,7 +45,7 @@ class MovieService(
             }
             .let { MoviePageDTO(it, movieRepository.findAll().count()) }
 
-    fun addMovieByTitle(title: String): Movie {
+    fun addMovieByTitle(title: String, price: Double): Movie {
         val uri = "http://www.omdbapi.com/?t=${title.replace(' ', '+')}&apikey=$omdbKey"
 
         val entity = HttpEntity("parameters", HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_JSON) })
@@ -55,7 +55,7 @@ class MovieService(
             String::class.java
         )
 
-        return mapper.readValue(result.body, Movie::class.java)
+        return mapper.readValue(result.body, Movie::class.java).copy(price = price)
             .apply { if (this.title == "") throw ServiceException(NOT_FOUND, "Could not find film with title: $title") }
             .let {
                 movieRepository.findByTitle(it.title) ?: movieRepository.save(it)

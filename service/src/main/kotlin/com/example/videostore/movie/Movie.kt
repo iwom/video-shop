@@ -33,7 +33,7 @@ data class Movie(
     val ratings: MutableSet<Rating> = mutableSetOf(),
 
     @Column(columnDefinition = "NUMERIC (4,2)")
-    val price: Double? = 39.99
+    val price: Double = 39.99
 ) : Serializable
 
 @Embeddable

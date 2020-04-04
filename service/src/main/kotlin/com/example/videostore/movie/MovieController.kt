@@ -15,5 +15,6 @@ class MovieController(
     ): MoviePageDTO = movieService.getAllMoviesWith(offset, limit)
 
     @PostMapping
-    fun addMovie(@RequestParam(name = "title") title: String) = movieService.addMovieByTitle(title)
+    fun addMovie(@RequestParam(name = "title") title: String, @RequestParam(name = "price") price: Double) =
+        movieService.addMovieByTitle(title, price)
 }
