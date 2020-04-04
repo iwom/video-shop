@@ -5,20 +5,31 @@ import com.example.videostore.movie.dto.MovieDTO
 import com.example.videostore.movie.dto.MoviePageDTO
 import com.example.videostore.movie.inventory.Inventory
 import com.example.videostore.movie.inventory.InventoryRepository
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategy.UPPER_CAMEL_CASE
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
-import java.util.*
 
 @Service
 class MovieService(
     private val movieRepository: MovieRepository,
     private val inventoryRepository: InventoryRepository
 ) {
+    companion object {
+        val mapper: ObjectMapper = ObjectMapper()
+            .setPropertyNamingStrategy(UPPER_CAMEL_CASE)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .registerModule(KotlinModule())
+    }
+
     @Value("\${videoshop.app.omdbKey}")
     private val omdbKey: String? = null
 
@@ -28,15 +39,13 @@ class MovieService(
                 MovieDTO(
                     movie = movie,
                     inventory = inventoryRepository.findByMovie(movie) ?: throw ServiceException(
-                        HttpStatus.NOT_FOUND, "Inventory for movie with id: ${movie.id} not found"
+                        NOT_FOUND, "Inventory for movie with id: ${movie.id} not found"
                     )
                 )
             }
             .let { MoviePageDTO(it, movieRepository.findAll().count()) }
 
-    @Transactional
     fun addMovieByTitle(title: String): Movie {
-
         val uri = "http://www.omdbapi.com/?t=${title.replace(' ', '+')}&apikey=$omdbKey"
 
         val entity = HttpEntity("parameters", HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_JSON) })
@@ -46,15 +55,11 @@ class MovieService(
             String::class.java
         )
 
-        val gson = GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-            .create()
-
-        val movie = gson.fromJson(result.body, Movie::class.java)
-            // for now I would leave it because by default it's null when deserialize
-            .copy(id = UUID.randomUUID())
-
-        return movieRepository.save(movie)
-            .apply { inventoryRepository.save(Inventory(movie = this)) }
+        return mapper.readValue(result.body, Movie::class.java)
+            .apply { if (this.title == "") throw ServiceException(NOT_FOUND, "Could not find film with title: $title") }
+            .let {
+                movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
+                    .apply { inventoryRepository.save(Inventory(movie = this)) }
+            }
     }
 }

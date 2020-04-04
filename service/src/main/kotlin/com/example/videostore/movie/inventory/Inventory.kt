@@ -12,7 +12,7 @@ data class Inventory(
     @Column(columnDefinition = "uuid", updatable = false)
     val id: UUID = UUID.randomUUID(),
 
-    val value: Int = 0,
+    val value: Int = 10,
 
     @Id
     @OneToOne

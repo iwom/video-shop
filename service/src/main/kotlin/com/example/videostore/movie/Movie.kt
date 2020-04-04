@@ -13,7 +13,7 @@ data class Movie(
     val id: UUID = UUID.randomUUID(),
 
     @NotBlank
-    val title: String = "Title",
+    val title: String = "",
     val year: String = "",
     val runtime: String = "",
     val genre: String = "",
@@ -30,10 +30,10 @@ data class Movie(
     val poster: String = "",
 
     @ElementCollection
-    val ratings: MutableSet<Rating> = mutableSetOf()
+    val ratings: MutableSet<Rating> = mutableSetOf(),
 
-//    @Column(columnDefinition = "NUMERIC (4,2)")
-//    val price: Double?
+    @Column(columnDefinition = "NUMERIC (4,2)")
+    val price: Double? = 39.99
 ) : Serializable
 
 @Embeddable
