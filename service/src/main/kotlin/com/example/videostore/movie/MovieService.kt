@@ -33,6 +33,9 @@ class MovieService(
     @Value("\${videoshop.app.omdbKey}")
     private val omdbKey: String? = null
 
+    @Value("\${videoshop.app.omdbUrl}")
+    private val omdbUrl: String? = null
+
     fun getAllMoviesWith(offset: Int, limit: Int): MoviePageDTO =
         movieRepository.findAllWith(offset, limit)
             .map { movie ->
@@ -43,20 +46,20 @@ class MovieService(
                     )
                 )
             }
-            .let { MoviePageDTO(it, movieRepository.findAll().count()) }
+            .let { MoviePageDTO(it, movieRepository.countAllBy()) }
 
     fun addMovieByTitle(title: String, price: Double): Movie {
-        val uri = "http://www.omdbapi.com/?t=${title.replace(' ', '+')}&apikey=$omdbKey"
+        val url = "$omdbUrl?t=${title.replace(' ', '+')}&apikey=$omdbKey"
 
         val entity = HttpEntity("parameters", HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_JSON) })
 
         val result = RestTemplate().exchange(
-            uri, HttpMethod.GET, entity,
+            url, HttpMethod.GET, entity,
             String::class.java
         )
 
         return mapper.readValue(result.body, Movie::class.java).copy(price = price)
-            .apply { if (this.title == "") throw ServiceException(NOT_FOUND, "Could not find film with title: $title") }
+            .apply { if (this.title.isEmpty()) throw ServiceException(NOT_FOUND, "Could not find film with title: $title") }
             .let {
                 movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
                     .apply { inventoryRepository.save(Inventory(movie = this)) }

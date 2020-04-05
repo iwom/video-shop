@@ -13,7 +13,7 @@ data class Movie(
     val id: UUID = UUID.randomUUID(),
 
     @NotBlank
-    val title: String = "",
+    val title: String = "Default title",
     val year: String = "",
     val runtime: String = "",
     val genre: String = "",
