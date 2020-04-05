@@ -47,8 +47,6 @@ export class MovieListComponent implements OnInit {
 
   openDialog(movie: Movie): void {
     const dialogRef = this.dialog.open(MovieDialog, {
-      minWidth: "32rem",
-      minHeight: "30rem",
       data: {movie: movie, selection: {}}
     });
 

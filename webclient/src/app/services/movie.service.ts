@@ -1,9 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Movie} from "../models/movie";
+import {HttpClient} from "@angular/common/http";
+import {ApiProvider} from "./api.provider";
 
 @Injectable()
 export class MovieService {
-  constructor() { }
+  constructor(private http: HttpClient, private api: ApiProvider) { }
 
   moviesResponse = {
     "movies": [
@@ -43,9 +45,19 @@ export class MovieService {
   };
 
   public fetch(limit: number, offset: number) {
+    console.log();
+    this.http.get(this.api.go().movies(offset, limit)).subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.error(error);
+      }
+    );
     return {
       "movies": this.moviesResponse.movies.slice(offset, offset + limit),
       "count": this.moviesResponse.total
     };
+
   }
 }
