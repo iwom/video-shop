@@ -10,13 +10,16 @@ export class Movie {
     readonly plot: string,
     readonly posterUrl: string,
     readonly ratings: Array<Rating>,
-    readonly price: number
-  ) {}
+    readonly price: number,
+    readonly inventory: number
+  ) {
+  }
 }
 
 export class Rating {
   constructor(
     readonly source: string,
     readonly value: string
-  ) {}
+  ) {
+  }
 }

@@ -1,63 +1,37 @@
 import {Injectable} from "@angular/core";
-import {Movie} from "../models/movie";
 import {HttpClient} from "@angular/common/http";
 import {ApiProvider} from "./api.provider";
+import {Observable, of} from "rxjs";
+import {catchError, map} from "rxjs/operators";
+import {Movie} from "../models/movie";
 
 @Injectable()
 export class MovieService {
   constructor(private http: HttpClient, private api: ApiProvider) { }
 
-  moviesResponse = {
-    "movies": [
-      new Movie("1", "Title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("2", "2 very long title here lorem ipsum sed do eiusmod tempor incididunt", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("3", "3 Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("4", "4Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("5", "5Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("6", "6Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("7", "7Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("8", "8Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("9", "9Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("10", "10_Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("11", "11+Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("12", "12Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("13", "13Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("14", "14Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("15", "15Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("16", "16O1ther title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("17", "17Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("18", "18Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("19", "19Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("20", "20Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("21", "21Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("22", "22Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("23", "23Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("24", "24Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("25", "25Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("26", "26Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("27", "27Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("28", "28Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("29", "29Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("30", "30Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-      new Movie("31", "31Other title", "2002", "132 min", "Drama", "John Doe", "Angelina Jolie, Brad Pitt", "Some plot Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit", "http://image.tmdb.org/t/p/w500//27EySoBH3oBuI6xat2QOquB9X8j.jpg", [], 19.99),
-    ],
-    "total": 31
-  };
-
-  public fetch(limit: number, offset: number) {
-    console.log();
-    this.http.get(this.api.go().movies(offset, limit)).subscribe(
-      data => {
-        console.log(data);
-      },
-      error => {
-        console.error(error);
-      }
-    );
-    return {
-      "movies": this.moviesResponse.movies.slice(offset, offset + limit),
-      "count": this.moviesResponse.total
-    };
-
+  public fetch(limit: number, offset: number): Observable<any> {
+    return this.http.get(this.api.go().movies(offset, limit)).pipe(
+      map(data => {
+        let movies: Array<Movie> = [];
+        data["movies"].forEach(element => {
+          let movie = element["movie"];
+          let inventory = element["inventory"];
+          movies.push(
+            new Movie(
+              movie["id"], movie["title"], movie["year"], movie["runtime"], movie["genre"],
+              movie["director"], movie["actors"], movie["plot"], movie["poster"],
+              movie["ratings"], movie["price"], inventory["value"])
+          )
+        });
+        return {
+          "movies": movies,
+          "count": data["total"]
+        }
+      }),
+      catchError(err => {
+        console.error(err);
+        return of({})
+      })
+    )
   }
 }

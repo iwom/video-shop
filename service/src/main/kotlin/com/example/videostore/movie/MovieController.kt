@@ -3,6 +3,7 @@ package com.example.videostore.movie
 import com.example.videostore.movie.dto.MoviePageDTO
 import org.springframework.web.bind.annotation.*
 
+@CrossOrigin
 @RequestMapping("/movies")
 @RestController
 class MovieController(

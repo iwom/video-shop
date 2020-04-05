@@ -6,7 +6,7 @@
                (page)="pageEvent = onPageChange($event)">
 </mat-paginator>
 
-<mat-grid-list [cols]="breakpoint" rowHeight="4:6" (window:resize)="onResize($event)" >
+<mat-grid-list [cols]="breakpoint" rowHeight="1:1" (window:resize)="onResize($event)" >
   <mat-grid-tile *ngFor="let movie of movieList">
     <div>
       <mat-card class="card">
@@ -25,7 +25,7 @@
         <mat-divider></mat-divider>
         <mat-card-content style="text-align: justify; text-justify: inter-word; padding-top: 1rem;">
           <p>
-            {{movie.plot.slice(0, 150)}} (...)
+            {{trimPlot(movie.plot)}}
           </p>
         </mat-card-content>
 
@@ -35,15 +35,9 @@
             <mat-icon>add_shopping_cart</mat-icon>
             {{movie.price}} PLN
           </button>
-          <button mat-button (click)="openDialog(movie)">More...</button>
+          <button mat-button>More...</button>
         </mat-card-actions>
       </mat-card>
     </div>
   </mat-grid-tile>
 </mat-grid-list>
-
-<mat-paginator [length]="length"
-               [pageSize]="pageSize"
-               [pageSizeOptions]="pageSizeOptions"
-               (page)="pageEvent = onPageChange($event)">
-</mat-paginator>

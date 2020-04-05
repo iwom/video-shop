@@ -28,6 +28,8 @@ services:
     ports:
       - 8080:8080
     restart: on-failure
+    environment:
+      - OMDB_KEY=<omdb_key_here>
     networks:
       - video-network
 

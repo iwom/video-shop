@@ -9,20 +9,10 @@
   <span>
     <a mat-button *ngIf="isLoggedIn()" routerLink="order-history" routerLinkActive="active">Order History</a>
     <a mat-button *ngIf="isLoggedIn()" routerLink="movies" routerLinkActive="active">Movies</a>
-    <a mat-button *ngIf="isLoggedIn()" (click)="sidenav.toggle()"><i class="material-icons">shopping_cart</i></a>
+    <a mat-button *ngIf="isLoggedIn()"><i class="material-icons">shopping_cart</i></a>
   </span>
 </mat-toolbar>
 
-
-<mat-sidenav-container class="example-container">
-
-  <mat-sidenav #sidenav mode="side" position="end" class="cart-side-nav">
-    <app-cart-sidenav></app-cart-sidenav>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<router-outlet></router-outlet>
 
 

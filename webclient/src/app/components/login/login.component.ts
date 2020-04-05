@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
-import { AuthService } from "../../services/auth.service";
-import { TokenStorageService } from "../../services/token.service";
-import { UserCredentials } from "../../models/user";
-import { Router } from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup} from "@angular/forms";
+import {AuthService} from "../../services/auth.service";
+import {TokenStorageService} from "../../services/token.service";
+import {UserCredentials} from "../../models/user";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -21,7 +21,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private tokenStorageService: TokenStorageService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.tokenStorageService.getToken()) {
