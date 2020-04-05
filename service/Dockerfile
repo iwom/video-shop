@@ -2,7 +2,7 @@ FROM maven:3.6.3-jdk-11-slim AS build
 COPY /src /usr/src/spring/src
 COPY pom.xml /usr/src/spring
 COPY Dockerfile /usr/src/spring
-RUN mvn -f /usr/src/spring/pom.xml clean install
+RUN mvn -f /usr/src/spring/pom.xml -DskipTests=true clean install
 
 FROM openjdk:11-jre-slim
 RUN apt-get update
