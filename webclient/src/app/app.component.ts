@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { TokenStorageService } from "./services/token.service";
-import { Router } from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {TokenStorageService} from "./services/token.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,8 @@ export class AppComponent implements OnInit {
   constructor(
     private tokenStorageService: TokenStorageService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     if (this.isLoggedIn()) {
