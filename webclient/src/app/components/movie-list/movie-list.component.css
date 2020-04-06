@@ -1,0 +1,16 @@
+.card {
+  max-width: 16rem;
+  height: auto;
+}
+
+.card-header-avatar {
+  margin-right: 1.8rem;
+}
+
+.card-header-avatar-image {
+  max-height: 6rem;
+}
+
+.card-header-subtitle-container {
+  margin-top: 1rem;
+}

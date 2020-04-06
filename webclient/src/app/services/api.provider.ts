@@ -7,8 +7,10 @@ export class ApiProvider {
   paths = {
     root: () => `/`,
     signIn: () => `${this.host}/auth/signin`,
-    signUp: () => `${this.host}/auth/signup`
+    signUp: () => `${this.host}/auth/signup`,
+    movies: (offset: number, limit: number) => `${this.host}/movies?offset=${offset}&limit=${limit}`
   };
+
   go() {
     return this.paths;
   }

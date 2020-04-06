@@ -7,9 +7,12 @@
   </span>
   <span class="fill-remaining-space"></span>
   <span>
+    <a mat-button *ngIf="isLoggedIn()" routerLink="order-history" routerLinkActive="active">Order History</a>
     <a mat-button *ngIf="isLoggedIn()" routerLink="movies" routerLinkActive="active">Movies</a>
-    <a mat-button *ngIf="isLoggedIn()" routerLink="cart" routerLinkActive="active"><i class="material-icons">shopping_cart</i></a>
+    <a mat-button *ngIf="isLoggedIn()"><i class="material-icons">shopping_cart</i></a>
   </span>
 </mat-toolbar>
 
 <router-outlet></router-outlet>
+
+
