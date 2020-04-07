@@ -1,7 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {Movie} from "../../models/movie";
 import {MovieService} from "../../services/movie.service";
 import {PageEvent} from "@angular/material/paginator";
+import {MatDialog} from "@angular/material/dialog";
+import {MovieDialogComponent} from "../movie-dialog/movie-dialog.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
+
+
+export interface MovieDialogData {
+  movie: Movie,
+  amount: number
+}
 
 @Component({
   selector: 'app-movie-list',
@@ -17,7 +26,7 @@ export class MovieListComponent implements OnInit {
   breakpoint = 4;
   movieList: Movie[] = [];
 
-  constructor(private movieService: MovieService) {
+  constructor(private movieService: MovieService, public dialog: MatDialog, private snackBar: MatSnackBar) {
   }
 
 
@@ -29,6 +38,24 @@ export class MovieListComponent implements OnInit {
         this.length = data.count;
       }
     );
+  }
+
+  openDialog(movie: Movie): void {
+    const dialogRef = this.dialog.open(MovieDialogComponent, {
+      minWidth: "32rem",
+      minHeight: "20rem",
+      data: {movie: movie, selection: {}}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.amount > 0) {
+        this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+      }
+    });
+  }
+
+  onAddToCart(movie: Movie): void {
+    this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
   }
 
   onPageChange(event: PageEvent) {
@@ -67,3 +94,4 @@ export class MovieListComponent implements OnInit {
   }
 
 }
+

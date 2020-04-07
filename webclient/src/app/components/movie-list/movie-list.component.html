@@ -31,11 +31,11 @@
 
         <mat-divider></mat-divider>
         <mat-card-actions>
-          <button mat-button>
+          <button mat-button (click)="onAddToCart(movie)">
             <mat-icon>add_shopping_cart</mat-icon>
             {{movie.price}} PLN
           </button>
-          <button mat-button>More...</button>
+          <button mat-button (click)="openDialog(movie)">More...</button>
         </mat-card-actions>
       </mat-card>
     </div>

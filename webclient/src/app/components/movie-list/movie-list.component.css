@@ -14,3 +14,23 @@
 .card-header-subtitle-container {
   margin-top: 1rem;
 }
+
+.modal-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.modal-element {
+  display: inline-block;
+  width: 50%;
+  height: 100%;
+}
+
+.modal-text {
+  padding: 0;
+  margin: 0 0 0.2rem;
+}
