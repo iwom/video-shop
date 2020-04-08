@@ -1,5 +1,3 @@
-<!--<h2 mat-dialog-title>{{data.movie.title}}</h2>-->
-
 <div>
   <h2 mat-dialog-title>{{data.movie.title}}</h2>
   <p class="modal-subtitle">{{data.movie.director}} | {{data.movie.year}} | {{data.movie.runtime}}</p>
@@ -10,7 +8,7 @@
   <mat-grid-list cols="3" rowHeight="4:1">
     <mat-grid-tile colspan="1" rowspan="6">
       <div class="modal-image-container">
-        <img style="max-height: 14rem; width: auto;" src="{{data.movie.posterUrl}}">
+        <img class="modal-image" src="{{data.movie.posterUrl}}">
       </div>
     </mat-grid-tile>
     <mat-grid-tile colspan="2" rowspan="4" >

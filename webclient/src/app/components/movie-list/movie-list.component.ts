@@ -35,7 +35,6 @@ export class MovieListComponent implements OnInit {
   ) {
   }
 
-
   ngOnInit(): void {
     this.resize(window);
     this.movieService.fetch(this.pageSize, 0).subscribe(

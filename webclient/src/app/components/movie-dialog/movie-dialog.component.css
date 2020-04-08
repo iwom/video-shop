@@ -12,6 +12,11 @@
   width: 100%;
 }
 
+.modal-image {
+  max-height: 14rem;
+  width: auto;
+}
+
 .modal-text {
   padding-left: 0.7rem;
   padding-right: 0.5rem;

@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Movie} from "../models/movie";
 import {Observable, Subject} from "rxjs";
+import {map} from "rxjs/operators";
 
-class CartData {
+export class CartData {
   constructor(
     public movie: Movie,
     public amount: number
@@ -24,13 +25,21 @@ export class CartService {
     return this.subject.asObservable();
   }
 
+  getAsList(): Array<CartData> {
+    let items = [];
+    this.items.forEach(cartMap => {
+      items.push(cartMap)
+    });
+    return items;
+  }
+
   add(movie: Movie, amount: number): void {
     if (this.items.has(movie.id)) {
       let currentMovie = this.items.get(movie.id);
       currentMovie.amount += amount;
       this.items.set(movie.id, currentMovie);
     } else {
-      this.items.set(movie.id, new CartData(movie, 1));
+      this.items.set(movie.id, new CartData(movie, amount));
     }
     this.subject.next(this.items);
   }

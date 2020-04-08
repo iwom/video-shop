@@ -9,7 +9,7 @@
   <span>
     <a mat-button *ngIf="isLoggedIn()" routerLink="order-history" routerLinkActive="active">Order History</a>
     <a mat-button *ngIf="isLoggedIn()" routerLink="movies" routerLinkActive="active">Movies</a>
-    <a mat-button *ngIf="isLoggedIn()"><mat-icon matBadge="{{cartSize}}" matBadgeColor="accent">shopping_cart</mat-icon></a>
+    <a mat-button *ngIf="isLoggedIn()" routerLink="cart"><mat-icon matBadge="{{cartSize}}" matBadgeColor="accent">shopping_cart</mat-icon></a>
   </span>
 </mat-toolbar>
 
