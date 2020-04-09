@@ -48,4 +48,10 @@ export class AppComponent implements OnInit, OnDestroy {
       return this.tokenStorageService.getUser().username;
     }
   }
+
+  isAdmin() {
+    if (!this.isLoggedIn()) return false;
+    const user = this.tokenStorageService.getUser();
+    return user.roles.includes("ADMIN");
+  }
 }

@@ -19,6 +19,7 @@ import {CartComponent} from './components/cart/cart.component';
 import {MovieService} from "./services/movie.service";
 import {OrderHistoryComponent} from './components/order-history/order-history.component';
 import {MovieDialogComponent} from "./components/movie-dialog/movie-dialog.component";
+import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {MovieDialogComponent} from "./components/movie-dialog/movie-dialog.compo
     MovieListComponent,
     CartComponent,
     OrderHistoryComponent,
-    MovieDialogComponent
+    MovieDialogComponent,
+    AdminPanelComponent
   ],
   imports: [
     BrowserModule,
