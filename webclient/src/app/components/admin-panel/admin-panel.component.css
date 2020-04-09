@@ -1,0 +1,13 @@
+.admin-panel {
+  display: block;
+}
+
+.admin-card-wrapper {
+  width: 100%;
+}
+
+.admin-card-content {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-evenly;
+}

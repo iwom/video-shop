@@ -6,6 +6,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MovieDialogComponent} from "../movie-dialog/movie-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {CartService} from "../../services/cart.service";
+import {TokenStorageService} from "../../services/token.service";
 
 
 export interface MovieDialogData {
@@ -31,7 +32,8 @@ export class MovieListComponent implements OnInit {
     public dialog: MatDialog,
     private movieService: MovieService,
     private snackBar: MatSnackBar,
-    private cartService: CartService
+    private cartService: CartService,
+    private tokenStorageService: TokenStorageService
   ) {
   }
 
@@ -88,6 +90,16 @@ export class MovieListComponent implements OnInit {
     }
   }
 
+  isLoggedIn() {
+    return !!this.tokenStorageService.getToken()
+  }
+
+  isAdmin() {
+    if (!this.isLoggedIn()) return false;
+    const user = this.tokenStorageService.getUser();
+    return user.roles.includes("ADMIN");
+  }
+
   private resize(window: Window) {
     if (window.innerWidth > 1400) {
       this.breakpoint = 4;
@@ -99,6 +111,5 @@ export class MovieListComponent implements OnInit {
       this.breakpoint = 1;
     }
   }
-
 }
 

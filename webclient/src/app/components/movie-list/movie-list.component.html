@@ -4,7 +4,7 @@
                (page)="pageEvent = onPageChange($event)">
 </mat-paginator>
 
-<mat-grid-list [cols]="breakpoint" rowHeight="1:1" (window:resize)="onResize($event)" >
+<mat-grid-list [cols]="breakpoint" rowHeight="1:1" (window:resize)="onResize($event)">
   <mat-grid-tile *ngFor="let movie of movieList">
     <div>
       <mat-card class="card">
@@ -13,7 +13,7 @@
             <img class="card-header-avatar-image" src="{{movie.posterUrl}}" alt="Poster image"/>
           </div>
           <mat-card-title>
-            {{movie.title}}
+            <span matBadge="{{movie.inventory}}" matBadgePosition="above before">{{movie.title}}</span>
           </mat-card-title>
           <mat-card-subtitle>
             {{movie.director}} <br> {{movie.genre}} <br> {{movie.year}} <br> {{movie.runtime}}
@@ -29,7 +29,7 @@
 
         <mat-divider></mat-divider>
         <mat-card-actions>
-          <button mat-button (click)="onAddToCart(movie)">
+          <button *ngIf="!isAdmin()" mat-button (click)="onAddToCart(movie)">
             <mat-icon>add_shopping_cart</mat-icon>
             {{movie.price}} PLN
           </button>

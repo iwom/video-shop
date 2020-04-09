@@ -1,1 +1,25 @@
-<p>admin-panel works!</p>
+<div class="admin-panel">
+  <div class="admin-card-wrapper">
+    <mat-card>
+      <div class="admin-card-content">
+        <mat-card-title>Add movie to inventory</mat-card-title>
+      </div>
+      <mat-card-content>
+        <form [formGroup]="movieForm" (ngSubmit)="onSubmit()">
+          <div class="admin-card-content">
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input formControlName="name" required matInput maxlength="10" placeholder="Toy Story">
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Amount</mat-label>
+              <input formControlName="amount" required matInput maxlength="10" placeholder="25">
+            </mat-form-field>
+            <button mat-button type="submit" [disabled]="!movieForm.valid">Submit</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
