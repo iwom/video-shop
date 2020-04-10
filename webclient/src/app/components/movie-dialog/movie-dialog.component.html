@@ -1,0 +1,39 @@
+<div>
+  <h2 mat-dialog-title>{{data.movie.title}}</h2>
+  <p class="modal-subtitle">{{data.movie.director}} | {{data.movie.year}} | {{data.movie.runtime}}</p>
+  <p class="modal-subtitle">{{data.movie.genre}}</p>
+</div>
+
+<mat-dialog-content>
+  <mat-grid-list cols="3" rowHeight="4:1">
+    <mat-grid-tile colspan="1" rowspan="6">
+      <div class="modal-image-container">
+        <img class="modal-image" src="{{data.movie.posterUrl}}">
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="4" >
+      <div class="modal-text">
+        <p>{{data.movie.plot}}</p>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="2" >
+      <div class="modal-text">
+        <p>{{data.movie.actors}}</p>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="3" rowspan="2">
+      <mat-chip-list>
+        <mat-chip *ngFor="let rating of data.movie.ratings">
+          {{rating.source}} | {{rating.value}}
+        </mat-chip>
+      </mat-chip-list>
+    </mat-grid-tile>
+  </mat-grid-list>
+</mat-dialog-content>
+
+
+<mat-dialog-actions class="modal-actions" align="end">
+  <button mat-button (click)="add()"><mat-icon>add</mat-icon></button>
+  <button mat-button (click)="remove()"><mat-icon>remove</mat-icon></button>
+  <button mat-raised-button color="primary" matBadge="{{amount}}" matBadgePosition="after" matBadgeColor="accent" [mat-dialog-close]="data">{{getButtonText()}}</button>
+</mat-dialog-actions>

@@ -2,6 +2,17 @@ import {Component, OnInit} from '@angular/core';
 import {Movie} from "../../models/movie";
 import {MovieService} from "../../services/movie.service";
 import {PageEvent} from "@angular/material/paginator";
+import {MatDialog} from "@angular/material/dialog";
+import {MovieDialogComponent} from "../movie-dialog/movie-dialog.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {CartService} from "../../services/cart.service";
+import {TokenStorageService} from "../../services/token.service";
+
+
+export interface MovieDialogData {
+  movie: Movie,
+  amount: number
+}
 
 @Component({
   selector: 'app-movie-list',
@@ -17,9 +28,14 @@ export class MovieListComponent implements OnInit {
   breakpoint = 4;
   movieList: Movie[] = [];
 
-  constructor(private movieService: MovieService) {
+  constructor(
+    public dialog: MatDialog,
+    private movieService: MovieService,
+    private snackBar: MatSnackBar,
+    private cartService: CartService,
+    private tokenStorageService: TokenStorageService
+  ) {
   }
-
 
   ngOnInit(): void {
     this.resize(window);
@@ -29,6 +45,26 @@ export class MovieListComponent implements OnInit {
         this.length = data.count;
       }
     );
+  }
+
+  openDialog(movie: Movie): void {
+    const dialogRef = this.dialog.open(MovieDialogComponent, {
+      minWidth: "32rem",
+      minHeight: "20rem",
+      data: {movie: movie, amount: 0}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.amount > 0) {
+        this.cartService.add(result.movie, result.amount);
+        this.snackBar.open("\'" + result.movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+      }
+    });
+  }
+
+  onAddToCart(movie: Movie): void {
+    this.cartService.add(movie, 1);
+    this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
   }
 
   onPageChange(event: PageEvent) {
@@ -54,6 +90,16 @@ export class MovieListComponent implements OnInit {
     }
   }
 
+  isLoggedIn() {
+    return !!this.tokenStorageService.getToken()
+  }
+
+  isAdmin() {
+    if (!this.isLoggedIn()) return false;
+    const user = this.tokenStorageService.getUser();
+    return user.roles.includes("ADMIN");
+  }
+
   private resize(window: Window) {
     if (window.innerWidth > 1400) {
       this.breakpoint = 4;
@@ -65,5 +111,5 @@ export class MovieListComponent implements OnInit {
       this.breakpoint = 1;
     }
   }
-
 }
+

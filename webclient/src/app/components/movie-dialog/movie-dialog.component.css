@@ -1,0 +1,25 @@
+.modal-subtitle {
+  margin-bottom: 0;
+  color: gray;
+}
+
+.modal-subtitle:last-of-type {
+  margin-bottom: 0.5rem;
+  color: gray;
+}
+
+.modal-image-container {
+  width: 100%;
+}
+
+.modal-image {
+  max-height: 14rem;
+  width: auto;
+}
+
+.modal-text {
+  padding-left: 0.7rem;
+  padding-right: 0.5rem;
+  text-align: justify;
+  text-justify: inter-word;
+}

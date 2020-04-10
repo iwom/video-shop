@@ -15,10 +15,11 @@ import {ApiProvider} from "./services/api.provider";
 import {AngularMaterialModule} from './modules/material.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MovieListComponent} from './components/movie-list/movie-list.component';
-import {MovieCardComponent} from './components/movie-card/movie-card.component';
 import {CartComponent} from './components/cart/cart.component';
 import {MovieService} from "./services/movie.service";
 import {OrderHistoryComponent} from './components/order-history/order-history.component';
+import {MovieDialogComponent} from "./components/movie-dialog/movie-dialog.component";
+import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 
 @NgModule({
   declarations: [
@@ -26,9 +27,10 @@ import {OrderHistoryComponent} from './components/order-history/order-history.co
     LoginComponent,
     SignupComponent,
     MovieListComponent,
-    MovieCardComponent,
     CartComponent,
-    OrderHistoryComponent
+    OrderHistoryComponent,
+    MovieDialogComponent,
+    AdminPanelComponent
   ],
   imports: [
     BrowserModule,
