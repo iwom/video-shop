@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*
 class MovieController(
     private val movieService: MovieService
 ) {
+    @GetMapping("/title")
+    fun getMoviesContaining(@RequestParam(name = "subString") subString: String): MoviePageDTO =
+        movieService.getAllMoviesContaining(subString)
+
     @GetMapping
     fun getMovies(
         @RequestParam(name = "offset") offset: Int,

@@ -1,6 +1,7 @@
 package com.example.videostore.movie.inventory
 
 import com.example.videostore.movie.Movie
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
@@ -16,6 +17,7 @@ data class Inventory(
 
     @Id
     @OneToOne
+    @JsonIgnore
     val movie: Movie = Movie()
 )
 
