@@ -10,6 +10,7 @@ interface MovieRepository : Repository<Movie, UUID> {
     fun findAllWith(offset: Int, limit: Int): List<Movie>
     fun countAllBy(): Long
     fun findByTitle(title: String): Movie?
+    fun findAllByTitleContainingIgnoringCase(subString: String): List<Movie>
 
     fun save(movie: Movie): Movie
 }
