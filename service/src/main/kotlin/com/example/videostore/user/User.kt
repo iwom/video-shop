@@ -1,5 +1,6 @@
 package com.example.videostore.user
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
 
@@ -17,6 +18,7 @@ data class User(
 
     @Column(unique = true)
     val email: String = "",
+    @JsonIgnore
     val password: String = ""
 ) {
 
