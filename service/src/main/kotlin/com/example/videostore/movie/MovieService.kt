@@ -54,10 +54,7 @@ class MovieService(
 
         return mapper.readValue(result.body, Movie::class.java).copy(price = price)
             .apply {
-                if (this.title.isEmpty()) throw ServiceException(
-                    NOT_FOUND,
-                    "Could not find film with title: $title"
-                )
+                if (this.title.isEmpty()) throw ServiceException(NOT_FOUND, "Could not find film with title: $title")
             }
             .let {
                 movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
