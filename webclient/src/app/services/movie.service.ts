@@ -9,8 +9,8 @@ import {Movie} from "../models/movie";
 export class MovieService {
   constructor(private http: HttpClient, private api: ApiProvider) { }
 
-  public fetch(limit: number, offset: number): Observable<any> {
-    return this.http.get(this.api.go().movies(offset, limit)).pipe(
+  public fetch(limit: number, offset: number, title: string = ""): Observable<any> {
+    return this.http.get(this.api.go().movies(offset, limit, title)).pipe(
       map(data => {
         let movies: Array<Movie> = [];
         data["movies"].forEach(element => {

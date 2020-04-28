@@ -8,7 +8,7 @@ import {OrderHistoryComponent} from "./components/order-history/order-history.co
 import {AdminPanelComponent} from "./components/admin-panel/admin-panel.component";
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'movies'},
+  {path: '', pathMatch: 'full', redirectTo: 'login'},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
   {path: 'cart', component: CartComponent},
