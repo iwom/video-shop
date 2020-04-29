@@ -8,11 +8,9 @@ import com.example.videostore.movie.MovieService
 import com.example.videostore.security.userDetails.UserDetailsImpl
 import com.example.videostore.user.User
 import com.example.videostore.user.UserService
-import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 
 @Service
@@ -42,7 +40,7 @@ class CartService(
             .copy(updatedOn = LocalDateTime.now())
             .let { salesOrderRepository.save(it) }
 
-        movieService.bookMovie(salesOrderLine.movie, salesOrderLine.quantity)
+        movieService.buyMovie(salesOrderLine.movie, salesOrderLine.quantity)
 
         return (salesOrderLineRepository.findBySalesOrderAndMovie(salesOrder, salesOrderLine.movie)
             ?.let { it.copy(quantity = it.quantity + salesOrderLine.quantity) }
