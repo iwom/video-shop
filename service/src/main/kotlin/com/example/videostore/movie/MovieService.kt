@@ -59,13 +59,25 @@ class MovieService(
             }
     }
 
-    fun buyMovie(movie: Movie, quantity: Int) {
+    fun returnToInventory(movie: Movie, quantity: Int) {
         val inventory: Inventory = inventoryRepository.findByMovie(movie)
                 ?: throw ResponseStatusException(NOT_FOUND, "There is no ${movie.title} in inventory")
 
         if (inventory.value < quantity)
             throw ResponseStatusException(
-                BAD_REQUEST, "Cannot buy $quantity of ${movie.title} movie. Quantity in inventory: ${inventory.value}"
+                BAD_REQUEST, "Cannot buy $quantity of ${movie.title} movie. There are: ${inventory.value} in inventory"
+            )
+
+        inventoryRepository.save(inventory.copy(value = inventory.value + quantity))
+    }
+
+    fun takeFromInventory(movie: Movie, quantity: Int) {
+        val inventory: Inventory = inventoryRepository.findByMovie(movie)
+                ?: throw ResponseStatusException(NOT_FOUND, "There is no ${movie.title} in inventory")
+
+        if (inventory.value < quantity)
+            throw ResponseStatusException(
+                BAD_REQUEST, "Cannot buy $quantity of ${movie.title} movie. There are: ${inventory.value} in inventory"
             )
         inventoryRepository.save(inventory.copy(value = inventory.value - quantity))
     }

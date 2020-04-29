@@ -7,6 +7,7 @@ import java.util.*
 
 interface SalesOrderLineRepository : Repository<SalesOrderLine, UUID> {
     fun save(salesOrderLine: SalesOrderLine): SalesOrderLine
-    fun findById(id: UUID): SalesOrderLine?
     fun findBySalesOrderAndMovie(salesOrder: SalesOrder, movie: Movie): SalesOrderLine?
+
+    fun deleteById(id: UUID)
 }

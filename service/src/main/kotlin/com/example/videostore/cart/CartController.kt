@@ -11,5 +11,10 @@ class CartController(
 ) {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    fun addToCart(@RequestBody salesOrderLine: SalesOrderLine): SalesOrderLine = cartService.addToCart(salesOrderLine)
+    fun addToCart(@RequestBody salesOrderLine: SalesOrderLine): SalesOrderLine =
+        cartService.addToCart(salesOrderLine)
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping
+    fun removeFromCart(@RequestBody salesOrderLine: SalesOrderLine) = cartService.removeFromCart(salesOrderLine)
 }
