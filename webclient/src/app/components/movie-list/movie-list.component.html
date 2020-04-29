@@ -1,8 +1,22 @@
-<mat-paginator [length]="length"
-               [pageSize]="pageSize"
-               [pageSizeOptions]="pageSizeOptions"
-               (page)="pageEvent = onPageChange($event)">
-</mat-paginator>
+<ul class="flex-container">
+  <li>
+    <form [formGroup]="movieSearchForm" class="form-full-width">
+      <div>
+        <mat-form-field class="form-field-full-width">
+          <mat-label>Title</mat-label>
+          <input formControlName="name" type="search" matInput maxlength="10" placeholder="Toy Story">
+        </mat-form-field>
+      </div>
+    </form>
+  </li>
+  <li>
+    <mat-paginator [length]="length"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="pageSizeOptions"
+                   (page)="pageEvent = onPageChange($event)">
+    </mat-paginator>
+  </li>
+</ul>
 
 <mat-grid-list [cols]="breakpoint" rowHeight="1:1" (window:resize)="onResize($event)">
   <mat-grid-tile *ngFor="let movie of movieList">
@@ -13,7 +27,7 @@
             <img class="card-header-avatar-image" src="{{movie.posterUrl}}" alt="Poster image"/>
           </div>
           <mat-card-title>
-            <span matBadge="{{movie.inventory}}" matBadgePosition="above before">{{movie.title}}</span>
+            <span>{{movie.title}}</span>
           </mat-card-title>
           <mat-card-subtitle>
             {{movie.director}} <br> {{movie.genre}} <br> {{movie.year}} <br> {{movie.runtime}}
@@ -34,6 +48,10 @@
             {{movie.price}} PLN
           </button>
           <button mat-button (click)="openDialog(movie)">More...</button>
+          <button mat-button *ngIf="isAdmin()" (click)="goToAdminPanel()">
+              {{movie.inventory}}
+              <mat-icon>add_circle_outline</mat-icon>
+          </button>
         </mat-card-actions>
       </mat-card>
     </div>

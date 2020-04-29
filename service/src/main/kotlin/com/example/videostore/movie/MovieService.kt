@@ -34,11 +34,10 @@ class MovieService(
     @Value("\${videoshop.app.omdbUrl}")
     private val omdbUrl: String? = null
 
-    fun getAllMoviesContaining(subString: String): MoviePageDTO =
-        movieRepository.findAllByTitleContainingIgnoringCase(subString).toMoviePageDTO()
-
-    fun getAllMoviesWith(offset: Int, limit: Int): MoviePageDTO =
-        movieRepository.findAllWith(offset, limit).toMoviePageDTO()
+    fun getAllMoviesWith(offset: Int, limit: Int, title: String): MoviePageDTO {
+        val searchTitle = title.ifEmpty { "." }
+        return movieRepository.findAllWith(offset, limit, searchTitle).toMoviePageDTO(searchTitle)
+    }
 
     fun addMovieByTitle(title: String, price: Double): Movie {
         val url = "$omdbUrl?t=${title.replace(' ', '+')}&apikey=$omdbKey"
@@ -52,8 +51,7 @@ class MovieService(
 
         return mapper.readValue(result.body, Movie::class.java).copy(price = price)
             .apply {
-                if (this.title.isEmpty())
-                    throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title")
+                if (this.title.isEmpty()) throw ServiceException(NOT_FOUND, "Could not find film with title: $title")
             }
             .let {
                 movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
@@ -72,7 +70,7 @@ class MovieService(
         inventoryRepository.save(inventory.copy(value = inventory.value - quantity))
     }
 
-    private fun List<Movie>.toMoviePageDTO() =
+    private fun List<Movie>.toMoviePageDTO(title: String) =
         this.map { movie ->
             MovieDTO(
                 movie = movie,
@@ -81,5 +79,5 @@ class MovieService(
                 )
             )
         }
-            .let { MoviePageDTO(it, movieRepository.countAllBy()) }
+            .let { MoviePageDTO(it, movieRepository.countAllWith(title)) }
 }

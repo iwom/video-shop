@@ -7,7 +7,9 @@ import {MovieDialogComponent} from "../movie-dialog/movie-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {CartService} from "../../services/cart.service";
 import {TokenStorageService} from "../../services/token.service";
-
+import {Router} from "@angular/router";
+import {FormControl, FormGroup} from "@angular/forms";
+import {debounceTime, filter, map, switchMap} from "rxjs/operators";
 
 export interface MovieDialogData {
   movie: Movie,
@@ -23,15 +25,23 @@ export class MovieListComponent implements OnInit {
   pageEvent: PageEvent;
   length = 100;
   pageSize = 16;
+  pageIndex = 0;
   pageSizeOptions: number[] = [8, 16, 24, 40];
 
   breakpoint = 4;
   movieList: Movie[] = [];
+  searchText = ''
+
+  nameFormControl = new FormControl('')
+  movieSearchForm = new FormGroup({
+    name: this.nameFormControl
+  });
 
   constructor(
     public dialog: MatDialog,
     private movieService: MovieService,
     private snackBar: MatSnackBar,
+    private router: Router,
     private cartService: CartService,
     private tokenStorageService: TokenStorageService
   ) {
@@ -39,12 +49,26 @@ export class MovieListComponent implements OnInit {
 
   ngOnInit(): void {
     this.resize(window);
-    this.movieService.fetch(this.pageSize, 0).subscribe(
+    this.movieService.fetch(this.pageSize, 0, this.searchText).subscribe(
       data => {
         this.movieList = data.movies;
         this.length = data.count;
       }
     );
+    this.nameFormControl.valueChanges.pipe(
+      debounceTime(500),
+      map(title => {
+        this.pageIndex = 0;
+        this.searchText = title;
+        return this.searchText;
+      }),
+      switchMap(title => this.movieService.fetch(this.pageSize, this.pageSize * this.pageIndex, title))
+    ).subscribe(
+      data => {
+        this.movieList = data.movies;
+        this.length = data.count;
+      }
+    )
   }
 
   openDialog(movie: Movie): void {
@@ -68,7 +92,9 @@ export class MovieListComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    this.movieService.fetch(event.pageSize, event.pageIndex * event.pageSize).subscribe(
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.movieService.fetch(this.pageSize, this.pageIndex * this.pageSize, this.searchText).subscribe(
       data => {
         this.movieList = data.movies;
         this.length = data.count;
@@ -110,6 +136,10 @@ export class MovieListComponent implements OnInit {
     } else {
       this.breakpoint = 1;
     }
+  }
+
+  goToAdminPanel() {
+    this.router.navigate(['/admin-panel'])
   }
 }
 
