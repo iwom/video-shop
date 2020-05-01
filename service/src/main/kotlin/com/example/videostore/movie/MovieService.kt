@@ -71,7 +71,7 @@ class MovieService(
         inventoryRepository.save(inventory.copy(value = inventory.value + quantity))
     }
 
-    fun takeFromInventory(movie: Movie, quantity: Int) {
+    fun removeFromInventory(movie: Movie, quantity: Int) {
         val inventory: Inventory = inventoryRepository.findByMovie(movie)
                 ?: throw ResponseStatusException(NOT_FOUND, "There is no ${movie.title} in inventory")
 

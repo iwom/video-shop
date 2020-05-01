@@ -1,14 +1,15 @@
 package com.example.videostore.cart
 
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrderRepository
+import com.example.videostore.cart.salesOrder.SalesOrder
 import com.example.videostore.cart.salesOrder.SalesOrderRepository
 import com.example.videostore.cart.salesOrderLine.SalesOrderLine
 import com.example.videostore.cart.salesOrderLine.SalesOrderLineRepository
+import com.example.videostore.movie.Movie
 import com.example.videostore.movie.MovieService
-import com.example.videostore.security.userDetails.UserDetailsImpl
-import com.example.videostore.user.UserService
+import com.example.videostore.security.AuthorizationService
+import com.example.videostore.user.User
 import org.springframework.http.HttpStatus
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
@@ -20,27 +21,23 @@ class CartService(
     private val salesOrderLineRepository: SalesOrderLineRepository,
     private val historicalSalesOrderRepository: HistoricalSalesOrderRepository,
     private val movieService: MovieService,
-    private val userService: UserService
+    private val authorizationService: AuthorizationService
 ) {
 
     //TODO: finalize cart
 
     @Transactional
     fun removeFromCart(salesOrderLine: SalesOrderLine) {
-        val currentUser = (SecurityContextHolder.getContext().authentication.principal as UserDetailsImpl)
-            .let { userService.getUserById(it.id) }
+        val currentUser = authorizationService.getCurrentUser()
 
-        val salesOrder =
-            (salesOrderRepository.findByUser(currentUser) ?: salesOrderLine.salesOrder.copy(user = currentUser))
-                .copy(updatedOn = LocalDateTime.now())
-                .let { salesOrderRepository.save(it) }
+        val salesOrder = getSalesOrderByUserOrElseCreate(currentUser, salesOrderLine)
+            .copy(updatedOn = LocalDateTime.now())
 
         val existingSalesOrderLine: SalesOrderLine =
-            salesOrderLineRepository.findBySalesOrderAndMovie(salesOrder, salesOrderLine.movie)
-                    ?: throw ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Sales order line for movie: ${salesOrderLine.movie.id} and user: ${currentUser.id} not found"
-                    )
+            salesOrderLineRepository.findBySalesOrderAndMovieOrThrow(salesOrder, salesOrderLine.movie)
+
+        if (existingSalesOrderLine.quantity == salesOrderLine.quantity)
+            return salesOrderLineRepository.deleteById(existingSalesOrderLine.id)
 
         if (existingSalesOrderLine.quantity < salesOrderLine.quantity)
             throw ResponseStatusException(
@@ -49,34 +46,40 @@ class CartService(
                         "There are only ${existingSalesOrderLine.quantity} of them in current cart"
             )
 
-        if (existingSalesOrderLine.quantity == salesOrderLine.quantity) {
-            salesOrderLineRepository.deleteById(existingSalesOrderLine.id)
-            return
-        }
-
         movieService.returnToInventory(salesOrderLine.movie, salesOrderLine.quantity)
 
-        (salesOrderLineRepository.findBySalesOrderAndMovie(salesOrder, salesOrderLine.movie)
-            ?.let { it.copy(quantity = it.quantity - salesOrderLine.quantity) }
-                ?: salesOrderLine.copy(salesOrder = salesOrder))
+        removeMovieFromSalesOrderLineInSalesOrder(salesOrderLine, salesOrder)
             .let { salesOrderLineRepository.save(it) }
     }
 
     @Transactional
     fun addToCart(salesOrderLine: SalesOrderLine): SalesOrderLine {
-        val currentUser = (SecurityContextHolder.getContext().authentication.principal as UserDetailsImpl)
-            .let { userService.getUserById(it.id) }
+        val currentUser = authorizationService.getCurrentUser()
 
-        val salesOrder =
-            (salesOrderRepository.findByUser(currentUser) ?: salesOrderLine.salesOrder.copy(user = currentUser))
-                .copy(updatedOn = LocalDateTime.now())
-                .let { salesOrderRepository.save(it) }
+        val salesOrder = getSalesOrderByUserOrElseCreate(currentUser, salesOrderLine)
+            .copy(updatedOn = LocalDateTime.now())
+            .let { salesOrderRepository.save(it) }
 
-        movieService.takeFromInventory(salesOrderLine.movie, salesOrderLine.quantity)
+        movieService.removeFromInventory(salesOrderLine.movie, salesOrderLine.quantity)
 
-        return (salesOrderLineRepository.findBySalesOrderAndMovie(salesOrder, salesOrderLine.movie)
-            ?.let { it.copy(quantity = it.quantity + salesOrderLine.quantity) }
-                ?: salesOrderLine.copy(salesOrder = salesOrder))
+        return addMovieToSalesOrderLineInSalesOrder(salesOrderLine, salesOrder)
             .let { salesOrderLineRepository.save(it) }
     }
+
+    private fun addMovieToSalesOrderLineInSalesOrder(
+        salesOrderLine: SalesOrderLine, salesOrder: SalesOrder
+    ): SalesOrderLine = (salesOrderLineRepository.findBySalesOrderAndMovie(salesOrder, salesOrderLine.movie)
+        ?.let { it.copy(quantity = it.quantity + salesOrderLine.quantity) }
+            ?: salesOrderLine.copy(salesOrder = salesOrder))
+
+    private fun removeMovieFromSalesOrderLineInSalesOrder(
+        salesOrderLine: SalesOrderLine,
+        salesOrder: SalesOrder
+    ): SalesOrderLine =
+        (salesOrderLineRepository.findBySalesOrderAndMovie(salesOrder, salesOrderLine.movie)
+            ?.let { it.copy(quantity = it.quantity - salesOrderLine.quantity) }
+                ?: salesOrderLine.copy(salesOrder = salesOrder))
+
+    private fun getSalesOrderByUserOrElseCreate(currentUser: User, salesOrderLine: SalesOrderLine): SalesOrder =
+        (salesOrderRepository.findByUser(currentUser) ?: salesOrderLine.salesOrder.copy(user = currentUser))
 }

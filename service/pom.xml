@@ -93,6 +93,7 @@
                 <configuration>
                     <args>
                         <arg>-Xjsr305=strict</arg>
+                        <arg>-Xjvm-default=compatibility</arg>
                     </args>
                     <compilerPlugins>
                         <plugin>spring</plugin>

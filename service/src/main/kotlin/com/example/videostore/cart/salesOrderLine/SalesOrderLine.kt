@@ -13,7 +13,7 @@ import javax.persistence.*
 data class SalesOrderLine(
     @Id
     val id: UUID = UUID.randomUUID(),
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH])
     val salesOrder: SalesOrder = SalesOrder(),
     @OneToOne
     val movie: Movie = Movie(),
