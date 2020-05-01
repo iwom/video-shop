@@ -1,11 +1,12 @@
 package com.example.videostore.cart
 
+import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrder
+import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrderLine
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrderRepository
 import com.example.videostore.cart.salesOrder.SalesOrder
 import com.example.videostore.cart.salesOrder.SalesOrderRepository
 import com.example.videostore.cart.salesOrderLine.SalesOrderLine
 import com.example.videostore.cart.salesOrderLine.SalesOrderLineRepository
-import com.example.videostore.movie.Movie
 import com.example.videostore.movie.MovieService
 import com.example.videostore.security.AuthorizationService
 import com.example.videostore.user.User
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class CartService(
@@ -24,10 +26,22 @@ class CartService(
     private val authorizationService: AuthorizationService
 ) {
 
-    //TODO: finalize cart
+    @Transactional
+    fun finalizeSalesOrder(salesOrderId: UUID): HistoricalSalesOrder {
+        val salesOrder = salesOrderRepository.findByIdOrThrow(salesOrderId)
+        val historicalSalesOrder = HistoricalSalesOrder(user = salesOrder.user)
+
+        val historicalSalesOrderLines = salesOrder.salesOrderLines
+            .map { HistoricalSalesOrderLine(it).copy(historicalSalesOrder = historicalSalesOrder) }.toMutableList()
+
+        salesOrderRepository.deleteById(salesOrderId)
+
+        return historicalSalesOrderRepository
+            .save(historicalSalesOrder.copy(historicalSalesOrderLines = historicalSalesOrderLines))
+    }
 
     @Transactional
-    fun removeFromCart(salesOrderLine: SalesOrderLine) {
+    fun removeFromSalesOrder(salesOrderLine: SalesOrderLine) {
         val currentUser = authorizationService.getCurrentUser()
 
         val salesOrder = getSalesOrderByUserOrElseCreate(currentUser, salesOrderLine)
@@ -53,7 +67,7 @@ class CartService(
     }
 
     @Transactional
-    fun addToCart(salesOrderLine: SalesOrderLine): SalesOrderLine {
+    fun addToSalesOrder(salesOrderLine: SalesOrderLine): SalesOrderLine {
         val currentUser = authorizationService.getCurrentUser()
 
         val salesOrder = getSalesOrderByUserOrElseCreate(currentUser, salesOrderLine)

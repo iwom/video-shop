@@ -13,12 +13,12 @@ import javax.persistence.*
 data class SalesOrderLine(
     @Id
     val id: UUID = UUID.randomUUID(),
-    @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH])
+    @ManyToOne
     val salesOrder: SalesOrder = SalesOrder(),
     @OneToOne
     val movie: Movie = Movie(),
     val quantity: Int = 0
 ) {
     @Column(columnDefinition = "NUMERIC (8,2)")
-    val price: Double =  quantity * movie.price
+    val price: Double = quantity * movie.price
 }
