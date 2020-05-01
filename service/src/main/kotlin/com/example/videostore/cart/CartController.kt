@@ -12,6 +12,9 @@ import java.util.*
 class CartController(
     private val cartService: CartService
 ) {
+    @GetMapping("/historical")
+    fun getHistoricalSalesOrders(): List<HistoricalSalesOrder> = cartService.getHistoricalSalesOrders()
+    
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     fun addToSalesOrder(@RequestBody salesOrderLine: SalesOrderLine): SalesOrderLine =

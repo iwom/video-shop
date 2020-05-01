@@ -26,6 +26,9 @@ class CartService(
     private val authorizationService: AuthorizationService
 ) {
 
+    fun getHistoricalSalesOrders(): List<HistoricalSalesOrder> = authorizationService.getCurrentUser()
+        .let { currentUser -> historicalSalesOrderRepository.findAllByUser(currentUser) }
+
     @Transactional
     fun finalizeSalesOrder(salesOrderId: UUID): HistoricalSalesOrder {
         val salesOrder = salesOrderRepository.findByIdOrThrow(salesOrderId)
