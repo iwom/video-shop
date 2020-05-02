@@ -27,13 +27,14 @@ create table sales_order_line
 
 create table historical_sales_order
 (
-    id         uuid not null
+    id          uuid not null
         constraint historical_sales_order_pkey
             primary key,
-    created_on timestamp,
-    user_id    uuid
+    created_on  timestamp,
+    user_id     uuid
         constraint fki1tldpvfpyt8gfg0vphsqm5h4
-            references users
+            references users,
+    total_price numeric(8, 2)
 );
 
 create table historical_sales_order_line

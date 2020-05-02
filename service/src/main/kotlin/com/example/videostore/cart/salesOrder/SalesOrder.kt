@@ -1,5 +1,6 @@
 package com.example.videostore.cart.salesOrder
 
+import com.example.videostore.cart.dto.SalesOrderDTO
 import com.example.videostore.cart.salesOrderLine.SalesOrderLine
 import com.example.videostore.user.User
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -19,4 +20,12 @@ data class SalesOrder(
     @JsonIgnore
     @OneToMany(mappedBy = "salesOrder", cascade = [CascadeType.ALL])
     val salesOrderLines: MutableList<SalesOrderLine> = mutableListOf()
-)
+) {
+    fun toSalesOrderDTO() = SalesOrderDTO(
+        id = this.id,
+        user = this.user,
+        createdOn = this.createdOn,
+        updatedOn = this.updatedOn,
+        salesOrderLines = this.salesOrderLines.map { it.toSalesOrderLineDTO() }.toMutableList()
+    )
+}

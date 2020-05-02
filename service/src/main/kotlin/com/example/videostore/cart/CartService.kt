@@ -1,5 +1,6 @@
 package com.example.videostore.cart
 
+import com.example.videostore.cart.dto.SalesOrderDTO
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrder
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrderLine
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrderRepository
@@ -25,6 +26,12 @@ class CartService(
     private val movieService: MovieService,
     private val authorizationService: AuthorizationService
 ) {
+
+    fun getAllSalesOrderLines(): SalesOrderDTO {
+        val currentUser = authorizationService.getCurrentUser()
+        return salesOrderRepository.findByUser(currentUser)?.toSalesOrderDTO()
+                ?: salesOrderRepository.save(SalesOrder(user = currentUser)).toSalesOrderDTO()
+    }
 
     fun getHistoricalSalesOrders(): List<HistoricalSalesOrder> = authorizationService.getCurrentUser()
         .let { currentUser -> historicalSalesOrderRepository.findAllByUser(currentUser) }
