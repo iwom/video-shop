@@ -77,6 +77,18 @@ class CartService(
     }
 
     @Transactional
+    fun deleteSalesOrder(salesOrderId: UUID) {
+        val currentUser = authorizationService.getCurrentUser()
+        salesOrderRepository.findByUser(currentUser)?.run {
+            if (this.id != salesOrderId) return
+
+            this.salesOrderLines.forEach { movieService.returnToInventory(it.movie, it.quantity) }
+
+            salesOrderRepository.deleteById(salesOrderId)
+        }
+    }
+
+    @Transactional
     fun addToSalesOrder(salesOrderLine: SalesOrderLine): SalesOrderLine {
         val currentUser = authorizationService.getCurrentUser()
 
