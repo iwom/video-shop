@@ -13,6 +13,7 @@ import org.springframework.http.*
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.server.ResponseStatusException
 
@@ -39,23 +40,34 @@ class MovieService(
         return movieRepository.findAllWith(offset, limit, searchTitle).toMoviePageDTO(searchTitle)
     }
 
-    fun addMovieByTitle(title: String, price: Double): Movie {
+    fun getMovieByTitle(title: String): Movie {
         val url = "$omdbUrl?t=${title.replace(' ', '+')}&apikey=$omdbKey"
 
         val entity = HttpEntity("parameters", HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_JSON) })
 
-        val result = RestTemplate().exchange(
-            url, HttpMethod.GET, entity,
-            String::class.java
-        )
+        val result = RestTemplate().exchange(url, HttpMethod.GET, entity, String::class.java)
 
-        return mapper.readValue(result.body, Movie::class.java).copy(price = price)
+        return mapper.readValue(result.body, Movie::class.java)
+    }
+
+    @Transactional
+    fun addMovieByTitle(title: String, price: Double, quantity: Int): MovieDTO {
+        return getMovieByTitle(title).copy(price = price)
             .apply {
-                if (this.title.isEmpty()) throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title")
+                if (this.title.isEmpty())
+                    throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title")
             }
             .let {
                 movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
-                    .apply { inventoryRepository.save(Inventory(movie = this)) }
+                    .apply { inventoryRepository.save(Inventory(movie = this, value = quantity)) }
+            }
+            .let {
+                MovieDTO(
+                    movie = it,
+                    inventory = inventoryRepository.findByMovie(it) ?: throw ResponseStatusException(
+                        NOT_FOUND, "Inventory for movie with id: ${it.id} not found"
+                    )
+                )
             }
     }
 

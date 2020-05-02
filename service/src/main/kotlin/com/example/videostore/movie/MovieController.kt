@@ -1,6 +1,7 @@
 package com.example.videostore.movie
 
 import com.example.videostore.movie.dto.MoviePageDTO
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @CrossOrigin
@@ -11,12 +12,15 @@ class MovieController(
 ) {
     @GetMapping
     fun getMovies(
-        @RequestParam(name = "offset") offset: Int,
-        @RequestParam(name = "limit") limit: Int,
-        @RequestParam(name = "title") title: String
+        @RequestParam offset: Int,
+        @RequestParam limit: Int,
+        @RequestParam title: String
     ): MoviePageDTO = movieService.getAllMoviesWith(offset, limit, title)
 
-    @PostMapping
-    fun addMovie(@RequestParam(name = "title") title: String, @RequestParam(name = "price") price: Double) =
-        movieService.addMovieByTitle(title, price)
+    @GetMapping("/admin")
+    fun getMovie(@RequestParam title: String) = movieService.getMovieByTitle(title)
+
+    @PostMapping("/admin")
+    fun addMovie(@RequestParam title: String, @RequestParam price: Double, @RequestParam quantity: Int) =
+        movieService.addMovieByTitle(title, price, quantity)
 }
