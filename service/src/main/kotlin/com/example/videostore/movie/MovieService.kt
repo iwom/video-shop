@@ -1,6 +1,5 @@
 package com.example.videostore.movie
 
-import com.example.videostore.infrastructure.ServiceException
 import com.example.videostore.movie.dto.MovieDTO
 import com.example.videostore.movie.dto.MoviePageDTO
 import com.example.videostore.movie.inventory.Inventory
@@ -10,13 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy.UPPER_CAMEL_CASE
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
+import org.springframework.http.*
+import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class MovieService(
@@ -53,7 +51,7 @@ class MovieService(
 
         return mapper.readValue(result.body, Movie::class.java).copy(price = price)
             .apply {
-                if (this.title.isEmpty()) throw ServiceException(NOT_FOUND, "Could not find film with title: $title")
+                if (this.title.isEmpty()) throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title")
             }
             .let {
                 movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
@@ -61,11 +59,34 @@ class MovieService(
             }
     }
 
+    fun returnToInventory(movie: Movie, quantity: Int) {
+        val inventory: Inventory = inventoryRepository.findByMovie(movie)
+                ?: throw ResponseStatusException(NOT_FOUND, "There is no ${movie.title} in inventory")
+
+        if (inventory.value < quantity)
+            throw ResponseStatusException(
+                BAD_REQUEST, "Cannot buy $quantity of ${movie.title} movie. There are: ${inventory.value} in inventory"
+            )
+
+        inventoryRepository.save(inventory.copy(value = inventory.value + quantity))
+    }
+
+    fun removeFromInventory(movie: Movie, quantity: Int) {
+        val inventory: Inventory = inventoryRepository.findByMovie(movie)
+                ?: throw ResponseStatusException(NOT_FOUND, "There is no ${movie.title} in inventory")
+
+        if (inventory.value < quantity)
+            throw ResponseStatusException(
+                BAD_REQUEST, "Cannot buy $quantity of ${movie.title} movie. There are: ${inventory.value} in inventory"
+            )
+        inventoryRepository.save(inventory.copy(value = inventory.value - quantity))
+    }
+
     private fun List<Movie>.toMoviePageDTO(title: String) =
         this.map { movie ->
             MovieDTO(
                 movie = movie,
-                inventory = inventoryRepository.findByMovie(movie) ?: throw ServiceException(
+                inventory = inventoryRepository.findByMovie(movie) ?: throw ResponseStatusException(
                     NOT_FOUND, "Inventory for movie with id: ${movie.id} not found"
                 )
             )
