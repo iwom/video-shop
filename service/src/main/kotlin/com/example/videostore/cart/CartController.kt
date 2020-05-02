@@ -1,9 +1,7 @@
 package com.example.videostore.cart
 
 import com.example.videostore.cart.dto.SalesOrderDTO
-import com.example.videostore.cart.dto.SalesOrderLineDTO
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrder
-import com.example.videostore.cart.salesOrder.SalesOrder
 import com.example.videostore.cart.salesOrderLine.SalesOrderLine
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -18,7 +16,7 @@ class CartController(
     fun getHistoricalSalesOrders(): List<HistoricalSalesOrder> = cartService.getHistoricalSalesOrders()
 
     @GetMapping
-    fun getAllSalesOrderLines(): SalesOrderDTO = cartService.getAllSalesOrderLines()
+    fun getCurrentSalesOrder(): SalesOrderDTO = cartService.getCurrentSalesOrder()
     
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping

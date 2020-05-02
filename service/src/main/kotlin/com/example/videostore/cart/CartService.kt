@@ -27,7 +27,7 @@ class CartService(
     private val authorizationService: AuthorizationService
 ) {
 
-    fun getAllSalesOrderLines(): SalesOrderDTO {
+    fun getCurrentSalesOrder(): SalesOrderDTO {
         val currentUser = authorizationService.getCurrentUser()
         return salesOrderRepository.findByUser(currentUser)?.toSalesOrderDTO()
                 ?: salesOrderRepository.save(SalesOrder(user = currentUser)).toSalesOrderDTO()
