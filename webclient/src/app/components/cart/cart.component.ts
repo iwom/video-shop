@@ -8,7 +8,7 @@ import {Movie} from "../../models/movie";
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
-  displayedColumns: string[] = ['poster', 'name', 'price', 'amount', 'delete'];
+  displayedColumns: string[] = ['poster', 'name', 'price', 'amount', 'add', 'remove', 'delete'];
   dataSource = null;
 
   constructor(private cartService: CartService) {
@@ -18,7 +18,17 @@ export class CartComponent implements OnInit {
     this.dataSource = this.cartService.getAsList();
   }
 
+  add(movie: Movie) {
+    this.cartService.add(movie, 1);
+    this.dataSource = this.cartService.getAsList();
+  }
+
   remove(movie: Movie) {
+    this.cartService.remove(movie, 1);
+    this.dataSource = this.cartService.getAsList();
+  }
+
+  removeAll(movie: Movie) {
     this.cartService.removeAll(movie);
     this.dataSource = this.cartService.getAsList();
   }

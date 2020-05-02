@@ -9,7 +9,9 @@ export class ApiProvider {
     signIn: () => `${this.host}/auth/signin`,
     signUp: () => `${this.host}/auth/signup`,
     movies: (offset: number, limit: number, title: string) =>
-      `${this.host}/movies?offset=${offset}&limit=${limit}&title=${title}`
+      `${this.host}/movies?offset=${offset}&limit=${limit}&title=${title}`,
+    carts: () => `${this.host}/carts`,
+    finalize: (cartId: string) => `${this.host}/carts/finalize/${cartId}`
   };
 
   go() {
