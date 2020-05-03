@@ -17,7 +17,7 @@ class CartController(
 
     @GetMapping
     fun getCurrentSalesOrder(): SalesOrderDTO = cartService.getCurrentSalesOrder()
-    
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     fun addToSalesOrder(@RequestBody salesOrderLine: SalesOrderLine): SalesOrderLine =
@@ -31,4 +31,9 @@ class CartController(
     @PutMapping("/finalize/{salesOrderId}")
     fun finalizeSalesOrder(@PathVariable salesOrderId: UUID): HistoricalSalesOrder =
         cartService.finalizeSalesOrder(salesOrderId)
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{salesOrderId}")
+    fun deleteSalesOrder(@PathVariable salesOrderId: UUID) = cartService.deleteSalesOrder(salesOrderId)
+
 }
