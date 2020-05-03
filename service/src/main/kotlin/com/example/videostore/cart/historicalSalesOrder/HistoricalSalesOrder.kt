@@ -15,4 +15,9 @@ data class HistoricalSalesOrder(
 
     @OneToMany(mappedBy = "historicalSalesOrder", cascade = [CascadeType.ALL])
     val historicalSalesOrderLines: MutableList<HistoricalSalesOrderLine> = mutableListOf()
-)
+) {
+    @Column(columnDefinition = "NUMERIC (8,2)")
+    val totalPrice: Double =
+        historicalSalesOrderLines.map { it.price }
+            .let { if (it.isNotEmpty()) it.reduce { acc, price -> price + acc } else 0.0 }
+}
