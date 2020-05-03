@@ -1,5 +1,6 @@
 package com.example.videostore.cart
 
+import com.example.videostore.cart.dto.SalesOrderDTO
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrder
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrderLine
 import com.example.videostore.cart.historicalSalesOrder.HistoricalSalesOrderRepository
@@ -25,6 +26,12 @@ class CartService(
     private val movieService: MovieService,
     private val authorizationService: AuthorizationService
 ) {
+
+    fun getCurrentSalesOrder(): SalesOrderDTO {
+        val currentUser = authorizationService.getCurrentUser()
+        return salesOrderRepository.findByUser(currentUser)?.toSalesOrderDTO()
+                ?: salesOrderRepository.save(SalesOrder(user = currentUser)).toSalesOrderDTO()
+    }
 
     fun getHistoricalSalesOrders(): List<HistoricalSalesOrder> = authorizationService.getCurrentUser()
         .let { currentUser -> historicalSalesOrderRepository.findAllByUser(currentUser) }
@@ -67,6 +74,18 @@ class CartService(
 
         removeMovieFromSalesOrderLineInSalesOrder(salesOrderLine, salesOrder)
             .let { salesOrderLineRepository.save(it) }
+    }
+
+    @Transactional
+    fun deleteSalesOrder(salesOrderId: UUID) {
+        val currentUser = authorizationService.getCurrentUser()
+        salesOrderRepository.findByUser(currentUser)?.run {
+            if (this.id != salesOrderId) return
+
+            this.salesOrderLines.forEach { movieService.returnToInventory(it.movie, it.quantity) }
+
+            salesOrderRepository.deleteById(salesOrderId)
+        }
     }
 
     @Transactional
