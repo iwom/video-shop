@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Movie} from "../models/movie";
 import {Observable, Subject} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {ApiProvider} from "./api.provider";
+import {catchError, map} from "rxjs/operators";
 
 export class CartData {
   constructor(
@@ -18,7 +21,7 @@ export class CartService {
   cartId: string = null;
   private subject = new Subject<Map<string, CartData>>();
 
-  constructor() {
+  constructor(private http: HttpClient, private api: ApiProvider) {
   }
 
   get(): Observable<Map<string, CartData>> {
@@ -37,15 +40,38 @@ export class CartService {
     if (this.items.has(movie.id)) {
       let currentMovie = this.items.get(movie.id);
       if (currentMovie.movie.inventory >= currentMovie.amount + amount) {
-        currentMovie.amount += amount;
-        this.items.set(movie.id, currentMovie);
+        this.callAdd(movie, amount).subscribe(
+          data => {
+            console.log(data)
+            currentMovie.amount += amount;
+            this.items.set(movie.id, currentMovie);
+          },
+          err => {
+            console.error(err);
+          }
+        );
       }
     } else {
       if (movie.inventory >= amount) {
-        this.items.set(movie.id, new CartData(movie, amount));
+        this.callAdd(movie, amount).subscribe(
+          data => {
+            console.log(data);
+            this.items.set(movie.id, new CartData(movie, amount));
+          },
+          err => {
+            console.error(err);
+          }
+        );
       }
     }
     this.subject.next(this.items);
+  }
+
+  private callAdd(movie: Movie, amount: number): Observable<any> {
+    return this.http.post(this.api.go().carts(), {
+      'movie': movie,
+      'quantity': amount
+    })
   }
 
   removeAll(movie: Movie): void {
@@ -58,19 +84,40 @@ export class CartService {
   remove(movie: Movie, amount: number): void {
     if (this.items.has(movie.id)) {
       if (this.items.get(movie.id).amount - amount <= 0) {
-        this.items.delete(movie.id)
+        let absAmount = Math.abs(this.items.get(movie.id).amount - amount)
+        this.callRemove(movie, absAmount).subscribe(
+          data => {
+            console.log(data)
+            this.items.delete(movie.id)
+          },
+          err => {
+            console.error(err);
+          }
+        )
       } else {
-        let currentMovie = this.items.get(movie.id);
-        currentMovie.amount -= amount;
-        this.items.set(movie.id, currentMovie);
+        this.callRemove(movie, amount).subscribe(
+          data => {
+            console.log(data)
+            let currentMovie = this.items.get(movie.id);
+            currentMovie.amount -= amount;
+            this.items.set(movie.id, currentMovie);
+            },
+          err => {
+            console.error(err);
+          }
+        )
       }
     }
     this.subject.next(this.items);
   }
 
-  clear(): void {
-    this.items.clear();
-    this.subject.next();
+  private callRemove(movie: Movie, amount: number): Observable<any> {
+    return this.http.request('delete' ,this.api.go().carts(), {
+      body: {
+        'movie': movie,
+        'quantity': amount
+      }
+    })
   }
 
   getTotal(): string {

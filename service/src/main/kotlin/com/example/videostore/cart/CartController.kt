@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
+@CrossOrigin
 @RequestMapping("/carts")
 @RestController
 class CartController(
