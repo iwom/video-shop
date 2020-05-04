@@ -3,6 +3,7 @@ package com.example.videostore.cart.salesOrderLine
 import com.example.videostore.cart.dto.SalesOrderLineDTO
 import com.example.videostore.cart.salesOrder.SalesOrder
 import com.example.videostore.movie.Movie
+import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
 
@@ -17,7 +18,7 @@ data class SalesOrderLine(
     val quantity: Int = 0
 ) {
     @Column(columnDefinition = "NUMERIC (8,2)")
-    val price: Double = quantity * movie.price
+    val price: BigDecimal = quantity.toBigDecimal() * movie.price
 
     fun toSalesOrderLineDTO() = SalesOrderLineDTO(
         movie = this.movie,

@@ -1,6 +1,7 @@
 package com.example.videostore.cart.historicalSalesOrder
 
 import com.example.videostore.user.User
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -17,7 +18,7 @@ data class HistoricalSalesOrder(
     val historicalSalesOrderLines: MutableList<HistoricalSalesOrderLine> = mutableListOf()
 ) {
     @Column(columnDefinition = "NUMERIC (8,2)")
-    val totalPrice: Double =
+    val totalPrice: BigDecimal =
         historicalSalesOrderLines.map { it.price }
-            .let { if (it.isNotEmpty()) it.reduce { acc, price -> price + acc } else 0.0 }
+            .let { if (it.isNotEmpty()) it.reduce { acc, price -> price + acc } else BigDecimal(0.0) }
 }

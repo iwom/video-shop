@@ -60,9 +60,6 @@ class CartService(
         val existingSalesOrderLine: SalesOrderLine =
             salesOrderLineRepository.findBySalesOrderAndMovieOrThrow(salesOrder, salesOrderLine.movie)
 
-        if (existingSalesOrderLine.quantity == salesOrderLine.quantity)
-            return salesOrderLineRepository.deleteById(existingSalesOrderLine.id)
-
         if (existingSalesOrderLine.quantity < salesOrderLine.quantity)
             throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
@@ -71,6 +68,9 @@ class CartService(
             )
 
         movieService.returnToInventory(salesOrderLine.movie, salesOrderLine.quantity)
+
+        if (existingSalesOrderLine.quantity == salesOrderLine.quantity)
+            return salesOrderLineRepository.deleteById(existingSalesOrderLine.id)
 
         removeMovieFromSalesOrderLineInSalesOrder(salesOrderLine, salesOrder)
             .let { salesOrderLineRepository.save(it) }
