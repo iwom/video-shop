@@ -12,6 +12,7 @@ export class ApiProvider {
       `${this.host}/movies?offset=${offset}&limit=${limit}&title=${title}`,
     carts: () => `${this.host}/carts`,
     cart: (cartId: string) => `${this.host}/carts/${cartId}`,
+    history: () => `${this.host}/carts/historical`,
     finalize: (cartId: string) => `${this.host}/carts/finalize/${cartId}`
   };
 

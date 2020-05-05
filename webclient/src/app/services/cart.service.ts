@@ -4,7 +4,7 @@ import {Observable, of, Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {ApiProvider} from "./api.provider";
 import {catchError, map} from "rxjs/operators";
-import {Cart, CartLine} from "../models/cart";
+import {Cart, CartHistory, CartLine} from "../models/cart";
 
 
 @Injectable({
@@ -53,10 +53,6 @@ export class CartService {
       catchError(err => {
         console.error(err)
         return err
-      }),
-      map(result => {
-        console.log(result)
-        return result
       })
     )
   }
@@ -66,10 +62,6 @@ export class CartService {
       catchError(err => {
         console.error(err)
         return err
-      }),
-      map(result => {
-        console.log(result)
-        return result
       })
     )
   }
@@ -84,10 +76,6 @@ export class CartService {
       catchError(err => {
         console.error(err)
         return err
-      }),
-      map(result => {
-        console.log(result)
-        return result
       })
     )
   }
@@ -99,9 +87,33 @@ export class CartService {
         return err
       }),
       map(result => {
-        console.log(result)
         this.cartId = null;
         return result
+      })
+    )
+  }
+
+  history() {
+    return this.http.get(this.api.go().history()).pipe(
+      catchError(err => {
+        console.error(err)
+        return err
+      }),
+      map(data => {
+        const past_carts: Array<CartHistory> = [];
+        (data as Array<object>).forEach(cart => {
+          const lines: Array<CartLine> = [];
+          cart["historicalSalesOrderLines"].forEach(element => {
+            const movie = element["movie"]
+            const movieData = new Movie(
+              movie["id"], movie["title"], movie["year"], movie["runtime"], movie["genre"],
+              movie["director"], movie["actors"], movie["plot"], movie["poster"],
+              movie["ratings"], movie["price"], null);
+            lines.push(new CartLine(movieData, element["quantity"], element["price"]))
+          });
+          past_carts.push(new CartHistory(cart["id"], lines, cart["totalPrice"], cart["createdOn"]));
+        });
+        return past_carts;
       })
     )
   }

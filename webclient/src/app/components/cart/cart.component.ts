@@ -27,7 +27,6 @@ export class CartComponent implements OnInit {
 
   ngOnInit(): void {
     this.cartService.getAll().subscribe(data => {
-      console.log(data)
       this.dataSource = data.lines;
       this.total = data.total;
     })
@@ -37,7 +36,6 @@ export class CartComponent implements OnInit {
     this.cartService.add(movie, 1).pipe(
       switchMap(_ => this.cartService.getAll())
     ).subscribe(data => {
-      console.log(data);
       this.dataSource = data.lines;
       this.total = data.total;
     });
@@ -47,7 +45,6 @@ export class CartComponent implements OnInit {
     this.cartService.remove(movie, 1).pipe(
       switchMap(_ => this.cartService.getAll())
     ).subscribe(data => {
-      console.log(data);
       this.dataSource = data.lines;
       this.total = data.total;
     });
@@ -58,7 +55,6 @@ export class CartComponent implements OnInit {
     this.cartService.remove(movie, line.quantity).pipe(
       switchMap(_ => this.cartService.getAll())
     ).subscribe(data => {
-      console.log(data);
       this.dataSource = data.lines;
       this.total = data.total;
     });
@@ -74,7 +70,6 @@ export class CartComponent implements OnInit {
       const dialogRef = this.dialog.open(CartDialogComponent, {
         data: {name: user.username}
       });
-
       dialogRef.afterClosed().pipe(
         switchMap(_ => {
           this.dataSource = null;

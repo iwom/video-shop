@@ -9,6 +9,16 @@ export class Cart {
   }
 }
 
+export class CartHistory {
+  constructor(
+    readonly id: string,
+    readonly lines: Array<CartLine>,
+    readonly total: number,
+    readonly created: Date
+  ) {
+  }
+}
+
 export class CartLine {
   constructor(
     readonly movie: Movie,
