@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.server.ResponseStatusException
+import java.math.BigDecimal
 
 @Service
 class MovieService(
@@ -39,7 +40,7 @@ class MovieService(
         return movieRepository.findAllWith(offset, limit, searchTitle).toMoviePageDTO(searchTitle)
     }
 
-    fun addMovieByTitle(title: String, price: Double): Movie {
+    fun addMovieByTitle(title: String, price: BigDecimal): Movie {
         val url = "$omdbUrl?t=${title.replace(' ', '+')}&apikey=$omdbKey"
 
         val entity = HttpEntity("parameters", HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_JSON) })
@@ -62,11 +63,6 @@ class MovieService(
     fun returnToInventory(movie: Movie, quantity: Int) {
         val inventory: Inventory = inventoryRepository.findByMovie(movie)
                 ?: throw ResponseStatusException(NOT_FOUND, "There is no ${movie.title} in inventory")
-
-        if (inventory.value < quantity)
-            throw ResponseStatusException(
-                BAD_REQUEST, "Cannot buy $quantity of ${movie.title} movie. There are: ${inventory.value} in inventory"
-            )
 
         inventoryRepository.save(inventory.copy(value = inventory.value + quantity))
     }

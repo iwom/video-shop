@@ -2,6 +2,7 @@ package com.example.videostore.movie
 
 import org.hibernate.validator.constraints.URL
 import java.io.Serializable
+import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
@@ -33,7 +34,7 @@ data class Movie(
     val ratings: MutableSet<Rating> = mutableSetOf(),
 
     @Column(columnDefinition = "NUMERIC (4,2)")
-    val price: Double = 39.99
+    val price: BigDecimal = BigDecimal(39.99)
 ) : Serializable
 
 @Embeddable
