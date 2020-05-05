@@ -12,10 +12,10 @@ export class MovieService {
   public fetch(limit: number, offset: number, title: string = ""): Observable<any> {
     return this.http.get(this.api.go().movies(offset, limit, title)).pipe(
       map(data => {
-        let movies: Array<Movie> = [];
+        const movies: Array<Movie> = [];
         data["movies"].forEach(element => {
-          let movie = element["movie"];
-          let inventory = element["inventory"];
+          const movie = element["movie"];
+          const inventory = element["inventory"];
           movies.push(
             new Movie(
               movie["id"], movie["title"], movie["year"], movie["runtime"], movie["genre"],

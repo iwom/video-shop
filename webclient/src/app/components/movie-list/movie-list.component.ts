@@ -9,7 +9,7 @@ import {CartService} from "../../services/cart.service";
 import {TokenStorageService} from "../../services/token.service";
 import {Router} from "@angular/router";
 import {FormControl, FormGroup} from "@angular/forms";
-import {debounceTime, filter, map, switchMap} from "rxjs/operators";
+import {debounceTime, map, switchMap} from "rxjs/operators";
 
 export interface MovieDialogData {
   movie: Movie,
@@ -87,8 +87,9 @@ export class MovieListComponent implements OnInit {
   }
 
   onAddToCart(movie: Movie): void {
-    this.cartService.add(movie, 1);
-    this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+    this.cartService.add(movie, 1).subscribe(result => {
+      this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+    });
   }
 
   onPageChange(event: PageEvent) {

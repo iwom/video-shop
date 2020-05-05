@@ -19,8 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private cartService: CartService
   ) {
-    this.subscription = this.cartService.get().subscribe(cart => {
-      this.cartSize = cart.size;
+    this.subscription = this.cartService.get().subscribe(cartSize => {
+      this.cartSize = cartSize;
     });
   }
 
