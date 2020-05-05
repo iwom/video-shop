@@ -6,13 +6,6 @@ import {ApiProvider} from "./api.provider";
 import {catchError, map} from "rxjs/operators";
 import {Cart, CartLine} from "../models/cart";
 
-export class CartData {
-  constructor(
-    public movie: Movie,
-    public amount: number
-  ) {
-  }
-}
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +87,20 @@ export class CartService {
       }),
       map(result => {
         console.log(result)
+        return result
+      })
+    )
+  }
+
+  finalize() {
+    return this.http.put(this.api.go().finalize(this.cartId), {}).pipe(
+      catchError(err => {
+        console.error(err)
+        return err
+      }),
+      map(result => {
+        console.log(result)
+        this.cartId = null;
         return result
       })
     )

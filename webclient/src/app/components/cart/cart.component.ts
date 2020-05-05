@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {CartService} from "../../services/cart.service";
 import {Movie} from "../../models/movie";
 import {switchMap} from "rxjs/operators";
+import {MatDialog} from "@angular/material/dialog";
+import {CartDialogComponent} from "../cart-dialog/cart-dialog.component";
+import {TokenStorageService} from "../../services/token.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-cart',
@@ -13,7 +17,12 @@ export class CartComponent implements OnInit {
   dataSource = null;
   total: number = 0;
 
-  constructor(private cartService: CartService) {
+  constructor(
+    public dialog: MatDialog,
+    private router: Router,
+    private tokenStorageService: TokenStorageService,
+    private cartService: CartService
+  ) {
   }
 
   ngOnInit(): void {
@@ -59,4 +68,20 @@ export class CartComponent implements OnInit {
     return this.total.toString() + " PLN";
   }
 
+  finalize() {
+    this.cartService.finalize().subscribe(result => {
+      const user = this.tokenStorageService.getUser();
+      const dialogRef = this.dialog.open(CartDialogComponent, {
+        data: {name: user.username}
+      });
+
+      dialogRef.afterClosed().pipe(
+        switchMap(_ => {
+          this.dataSource = null;
+          this.total = 0;
+          return this.cartService.getAll()
+        })
+      ).subscribe(_ => this.router.navigate(['/movies']))
+    })
+  }
 }

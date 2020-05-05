@@ -26,6 +26,9 @@ data class SalesOrder(
         user = this.user,
         createdOn = this.createdOn,
         updatedOn = this.updatedOn,
-        salesOrderLines = this.salesOrderLines.map { it.toSalesOrderLineDTO() }.toMutableList()
+        salesOrderLines = this.salesOrderLines
+                .map { it.toSalesOrderLineDTO() }
+                .sortedBy { it.movie.title }
+                .toMutableList()
     )
 }
