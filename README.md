@@ -1,5 +1,5 @@
 # video-shop
-###Installing with docker
+### Installing with docker
 - Install docker and docker-compose on your local machine
 - Run docker build:
 ```shell script
