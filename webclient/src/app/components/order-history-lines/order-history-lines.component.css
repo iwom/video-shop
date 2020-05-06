@@ -1,0 +1,13 @@
+table {
+  text-align: center !important;
+  min-width: 800px !important;
+}
+
+.mat-header-cell {
+  text-align: center;
+}
+
+.cart-image {
+  max-height: 4rem;
+  padding-top: 6px;
+}
