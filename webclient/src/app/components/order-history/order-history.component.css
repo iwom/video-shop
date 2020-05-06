@@ -7,23 +7,23 @@ table {
   text-align: center;
 }
 
-tr.example-detail-row {
+tr.order-row {
   height: 0;
 }
 
-tr.example-element-row:not(.example-expanded-row):hover {
+tr.order-row-element:not(.example-expanded-row):hover {
   background: whitesmoke;
 }
 
-tr.example-element-row:not(.example-expanded-row):active {
+tr.order-row-element:not(.example-expanded-row):active {
   background: #efefef;
 }
 
-.example-element-row td {
+.order-row-element td {
   border-bottom-width: 0;
 }
 
-.example-element-detail {
+.order-row-element-detail {
   overflow: hidden;
   display: flex;
   flex-direction: column;
