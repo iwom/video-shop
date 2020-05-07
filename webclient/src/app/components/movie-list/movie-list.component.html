@@ -43,7 +43,10 @@
 
         <mat-divider></mat-divider>
         <mat-card-actions>
-          <button *ngIf="!isAdmin()" mat-button matTooltip="Add to cart" (click)="onAddToCart(movie)">
+          <button *ngIf="!isAdmin()" mat-button
+                  [disabled]="movie.inventory < 1"
+                  matTooltip="Add to cart"
+                  (click)="onAddToCart(movie)">
             <mat-icon>add_shopping_cart</mat-icon>
             {{movie.price}} PLN
           </button>

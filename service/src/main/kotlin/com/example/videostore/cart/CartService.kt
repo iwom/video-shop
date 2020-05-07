@@ -34,7 +34,11 @@ class CartService(
     }
 
     fun getHistoricalSalesOrders(): List<HistoricalSalesOrder> = authorizationService.getCurrentUser()
-        .let { currentUser -> historicalSalesOrderRepository.findAllByUser(currentUser) }
+        .let { currentUser -> historicalSalesOrderRepository
+                .findAllByUser(currentUser)
+                .sortedBy { it.createdOn }
+                .reversed()
+        }
 
     @Transactional
     fun finalizeSalesOrder(salesOrderId: UUID): HistoricalSalesOrder {
