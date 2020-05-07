@@ -3,6 +3,7 @@ package com.example.videostore.cart.historicalSalesOrder
 import com.example.videostore.cart.salesOrderLine.SalesOrderLine
 import com.example.videostore.movie.Movie
 import com.fasterxml.jackson.annotation.JsonIgnore
+import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
 
@@ -23,5 +24,5 @@ data class HistoricalSalesOrderLine(
     )
 
     @Column(columnDefinition = "NUMERIC (8,2)")
-    val price: Double = quantity * movie.price
+    val price: BigDecimal = quantity.toBigDecimal() * movie.price
 }

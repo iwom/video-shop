@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.server.ResponseStatusException
+import java.math.BigDecimal
 
 @Service
 class MovieService(
@@ -51,7 +52,7 @@ class MovieService(
     }
 
     @Transactional
-    fun addMovieByTitle(title: String, price: Double, quantity: Int): MovieDTO {
+    fun addMovieByTitle(title: String, price: BigDecimal, quantity: Int): MovieDTO {
         return getMovieByTitle(title).copy(price = price)
             .apply {
                 if (this.title.isEmpty())
@@ -74,11 +75,6 @@ class MovieService(
     fun returnToInventory(movie: Movie, quantity: Int) {
         val inventory: Inventory = inventoryRepository.findByMovie(movie)
                 ?: throw ResponseStatusException(NOT_FOUND, "There is no ${movie.title} in inventory")
-
-        if (inventory.value < quantity)
-            throw ResponseStatusException(
-                BAD_REQUEST, "Cannot buy $quantity of ${movie.title} movie. There are: ${inventory.value} in inventory"
-            )
 
         inventoryRepository.save(inventory.copy(value = inventory.value + quantity))
     }
