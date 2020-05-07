@@ -8,7 +8,7 @@ docker-compose up
 ```
 - Wait 5 mins to get all dependencies installed
 - Run your favourite web browser and navigate to localhost:8081
-- Log in to admin's account with ```admin``` ```Admin123```
+- Log in to admin's account with ```admin``` ```Admin12345```
 
 <h3>Backend</h3>
 <p>
