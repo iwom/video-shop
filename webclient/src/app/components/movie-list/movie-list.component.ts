@@ -9,7 +9,7 @@ import {CartService} from "../../services/cart.service";
 import {TokenStorageService} from "../../services/token.service";
 import {Router} from "@angular/router";
 import {FormControl, FormGroup} from "@angular/forms";
-import {debounceTime, filter, map, switchMap} from "rxjs/operators";
+import {debounceTime, map, switchMap} from "rxjs/operators";
 
 export interface MovieDialogData {
   movie: Movie,
@@ -80,15 +80,21 @@ export class MovieListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result.amount > 0) {
-        this.cartService.add(result.movie, result.amount);
-        this.snackBar.open("\'" + result.movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+        this.cartService.add(result.movie, result.amount).pipe(
+          switchMap(_ => this.cartService.getAll())
+        ).subscribe(_ => {
+          this.snackBar.open("\'" + result.movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+        });
       }
     });
   }
 
   onAddToCart(movie: Movie): void {
-    this.cartService.add(movie, 1);
-    this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+    this.cartService.add(movie, 1).pipe(
+      switchMap(_ => this.cartService.getAll())
+    ).subscribe(_ => {
+      this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
+    });
   }
 
   onPageChange(event: PageEvent) {

@@ -19,7 +19,9 @@ import {CartComponent} from './components/cart/cart.component';
 import {MovieService} from "./services/movie.service";
 import {OrderHistoryComponent} from './components/order-history/order-history.component';
 import {MovieDialogComponent} from "./components/movie-dialog/movie-dialog.component";
-import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
+import {AdminPanelComponent} from './components/admin-panel/admin-panel.component';
+import {CartDialogComponent} from "./components/cart-dialog/cart-dialog.component";
+import {OrderHistoryLinesComponent} from "./components/order-history-lines/order-history-lines.component";
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { AdminPanelComponent } from './components/admin-panel/admin-panel.compon
     SignupComponent,
     MovieListComponent,
     CartComponent,
+    CartDialogComponent,
     OrderHistoryComponent,
+    OrderHistoryLinesComponent,
     MovieDialogComponent,
     AdminPanelComponent
   ],

@@ -43,12 +43,15 @@
 
         <mat-divider></mat-divider>
         <mat-card-actions>
-          <button *ngIf="!isAdmin()" mat-button (click)="onAddToCart(movie)">
+          <button *ngIf="!isAdmin()" mat-button
+                  [disabled]="movie.inventory < 1"
+                  matTooltip="Add to cart"
+                  (click)="onAddToCart(movie)">
             <mat-icon>add_shopping_cart</mat-icon>
             {{movie.price}} PLN
           </button>
           <button mat-button (click)="openDialog(movie)">More...</button>
-          <button mat-button *ngIf="isAdmin()" (click)="goToAdminPanel()">
+          <button mat-button *ngIf="isAdmin()" matTooltip="Order more" (click)="goToAdminPanel()">
               {{movie.inventory}}
               <mat-icon>add_circle_outline</mat-icon>
           </button>

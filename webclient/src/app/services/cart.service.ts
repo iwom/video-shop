@@ -1,80 +1,120 @@
 import {Injectable} from '@angular/core';
 import {Movie} from "../models/movie";
-import {Observable, Subject} from "rxjs";
-import {map} from "rxjs/operators";
+import {Observable, of, Subject} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {ApiProvider} from "./api.provider";
+import {catchError, map} from "rxjs/operators";
+import {Cart, CartHistory, CartLine} from "../models/cart";
 
-export class CartData {
-  constructor(
-    public movie: Movie,
-    public amount: number
-  ) {
-  }
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  items: Map<string, CartData> = new Map();
-  private subject = new Subject<Map<string, CartData>>();
+  private cartId: string = null;
+  private items: number = 0;
+  private subject = new Subject<number>();
 
-  constructor() {
+
+  constructor(private http: HttpClient, private api: ApiProvider) {
+    this.getAll().subscribe();
   }
 
-  get(): Observable<Map<string, CartData>> {
+  get(): Observable<number> {
     return this.subject.asObservable();
   }
 
-  getAsList(): Array<CartData> {
-    let items = [];
-    this.items.forEach(cartMap => {
-      items.push(cartMap)
-    });
-    return items;
+  getAll(): Observable<Cart> {
+    return this.http.get(this.api.go().carts()).pipe(
+      map(data => {
+        this.cartId = data["id"]
+        this.items = data["salesOrderLines"].length;
+        const lines: Array<CartLine> = [];
+        data["salesOrderLines"].forEach(element => {
+            const movie = element["movie"]
+            const movieData = new Movie(
+              movie["id"], movie["title"], movie["year"], movie["runtime"], movie["genre"],
+              movie["director"], movie["actors"], movie["plot"], movie["poster"],
+              movie["ratings"], movie["price"], null);
+            lines.push(new CartLine(movieData, element["quantity"], element["price"]))
+          }
+        )
+        this.subject.next(this.items);
+        return new Cart(data["id"], lines, data["totalPrice"])
+      })
+    )
   }
 
-  add(movie: Movie, amount: number): void {
-    if (this.items.has(movie.id)) {
-      let currentMovie = this.items.get(movie.id);
-      currentMovie.amount += amount;
-      this.items.set(movie.id, currentMovie);
-    } else {
-      this.items.set(movie.id, new CartData(movie, amount));
-    }
-    this.subject.next(this.items);
+  add(movie: Movie, amount: number): Observable<any> {
+    return this.http.post(this.api.go().carts(), {
+      'movie': movie,
+      'quantity': amount
+    }).pipe(
+      catchError(err => {
+        console.error(err)
+        return err
+      })
+    )
   }
 
-  removeAll(movie: Movie): void {
-    if (this.items.has(movie.id)) {
-      this.items.delete(movie.id);
-    }
-    this.subject.next(this.items);
+  removeAll(): Observable<any> {
+    return this.http.delete(this.api.go().cart(this.cartId)).pipe(
+      catchError(err => {
+        console.error(err)
+        return err
+      })
+    )
   }
 
-  remove(movie: Movie, amount: number): void {
-    if (this.items.has(movie.id)) {
-      if (this.items.get(movie.id).amount - amount <= 0) {
-        this.items.delete(movie.id)
-      } else {
-        let currentMovie = this.items.get(movie.id);
-        currentMovie.amount -= amount;
-        this.items.set(movie.id, currentMovie);
+  remove(movie: Movie, amount: number): Observable<any> {
+    return this.http.request('delete' ,this.api.go().carts(), {
+      body: {
+        'movie': movie,
+        'quantity': amount
       }
-    }
-    this.subject.next(this.items);
+    }).pipe(
+      catchError(err => {
+        console.error(err)
+        return err
+      })
+    )
   }
 
-  clear(): void {
-    this.items.clear();
-    this.subject.next();
+  finalize() {
+    return this.http.put(this.api.go().finalize(this.cartId), {}).pipe(
+      catchError(err => {
+        console.error(err)
+        return err
+      }),
+      map(result => {
+        this.cartId = null;
+        return result
+      })
+    )
   }
 
-  getTotal(): string {
-    let total = 0.0;
-    this.items.forEach((value) => {
-      total += value.amount * value.movie.price
-    });
-    return total.toFixed(2);
+  history() {
+    return this.http.get(this.api.go().history()).pipe(
+      catchError(err => {
+        console.error(err)
+        return err
+      }),
+      map(data => {
+        const past_carts: Array<CartHistory> = [];
+        (data as Array<object>).forEach(cart => {
+          const lines: Array<CartLine> = [];
+          cart["historicalSalesOrderLines"].forEach(element => {
+            const movie = element["movie"]
+            const movieData = new Movie(
+              movie["id"], movie["title"], movie["year"], movie["runtime"], movie["genre"],
+              movie["director"], movie["actors"], movie["plot"], movie["poster"],
+              movie["ratings"], movie["price"], null);
+            lines.push(new CartLine(movieData, element["quantity"], element["price"]))
+          });
+          past_carts.push(new CartHistory(cart["id"], lines, cart["totalPrice"], cart["createdOn"]));
+        });
+        return past_carts;
+      })
+    )
   }
-
 }

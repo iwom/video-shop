@@ -1,1 +1,38 @@
-<p>order-history works!</p>
+<table mat-table
+       [dataSource]="dataSource" multiTemplateDataRows
+       class="mat-elevation-z8">
+
+  <ng-container matColumnDef="created">
+    <th mat-header-cell *matHeaderCellDef> Date </th>
+    <td mat-cell *matCellDef="let element"> {{element.created | date}} </td>
+    <td mat-footer-cell> </td>
+  </ng-container>
+
+  <ng-container matColumnDef="total">
+    <th mat-header-cell *matHeaderCellDef> Total </th>
+    <td mat-cell *matCellDef="let element"> {{element.total}} PLN </td>
+    <td mat-footer-cell> </td>
+  </ng-container>
+
+  <ng-container matColumnDef="items">
+    <th mat-header-cell *matHeaderCellDef> Items </th>
+    <td mat-cell *matCellDef="let element"> {{element.lines.length}} </td>
+    <td mat-footer-cell> </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+      <div class="order-row-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <app-order-history-lines [dataSource]=element.lines></app-order-history-lines>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+      class="order-row-element"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="order-row"></tr>
+</table>

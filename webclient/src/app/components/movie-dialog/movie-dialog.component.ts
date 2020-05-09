@@ -35,4 +35,8 @@ export class MovieDialogComponent {
     }
     return "Order"
   }
+
+  isAvailable(): boolean {
+    return this.data.movie.inventory > 0;
+  }
 }

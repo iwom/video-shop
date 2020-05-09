@@ -2,6 +2,8 @@
   <h2 mat-dialog-title>{{data.movie.title}}</h2>
   <p class="modal-subtitle">{{data.movie.director}} | {{data.movie.year}} | {{data.movie.runtime}}</p>
   <p class="modal-subtitle">{{data.movie.genre}}</p>
+  <h4 class="modal-title-available" *ngIf="isAvailable()">Available: {{data.movie.inventory}}</h4>
+  <h4 class="modal-title-unavailable" *ngIf="!isAvailable()">Currently unavailable</h4>
 </div>
 
 <mat-dialog-content>
@@ -33,7 +35,11 @@
 
 
 <mat-dialog-actions class="modal-actions" align="end">
-  <button mat-button (click)="add()"><mat-icon>add</mat-icon></button>
-  <button mat-button (click)="remove()"><mat-icon>remove</mat-icon></button>
-  <button mat-raised-button color="primary" matBadge="{{amount}}" matBadgePosition="after" matBadgeColor="accent" [mat-dialog-close]="data">{{getButtonText()}}</button>
+  <button mat-button [disabled]="data.movie.inventory < 1" (click)="add()"><mat-icon>add</mat-icon></button>
+  <button mat-button [disabled]="data.movie.inventory < 1" (click)="remove()"><mat-icon>remove</mat-icon></button>
+  <button mat-raised-button
+          [disabled]="data.movie.inventory < 1" color="primary" matBadge="{{amount}}"
+          matBadgePosition="after" matBadgeColor="accent" [mat-dialog-close]="data">
+    {{getButtonText()}}
+  </button>
 </mat-dialog-actions>
