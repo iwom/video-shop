@@ -12,12 +12,16 @@ class MovieController(
 ) {
     @GetMapping
     fun getMovies(
-        @RequestParam(name = "offset") offset: Int,
-        @RequestParam(name = "limit") limit: Int,
-        @RequestParam(name = "title") title: String
+        @RequestParam offset: Int,
+        @RequestParam limit: Int,
+        @RequestParam title: String
     ): MoviePageDTO = movieService.getAllMoviesWith(offset, limit, title)
 
-    @PostMapping
-    fun addMovie(@RequestParam(name = "title") title: String, @RequestParam(name = "price") price: BigDecimal) =
-        movieService.addMovieByTitle(title, price)
+    @PostMapping("/admin")
+    fun addMovie(@RequestParam title: String, @RequestParam price: BigDecimal, @RequestParam quantity: Int) =
+        movieService.addMovieByTitle(title, price, quantity)
+
+    @GetMapping("/admin")
+    fun getMovie(@RequestParam title: String) = movieService.getMovieByTitle(title)
+
 }
