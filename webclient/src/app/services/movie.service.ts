@@ -38,8 +38,10 @@ export class MovieService {
   public getByTitle(title: string): Observable<any> {
     return this.http.get(this.api.go().admin(title)).pipe(
       map(data => {
-        console.log(data);
-        return data
+        return new Movie(
+          data["id"], data["title"], data["year"], data["runtime"], data["genre"],
+          data["director"], data["actors"], data["plot"], data["poster"],
+          data["ratings"], data["price"], null)
       }),
       catchError(err => {
         console.error(err);
@@ -52,7 +54,7 @@ export class MovieService {
     return this.http.post(this.api.go().admin(title, price, quantity), {}).pipe(
       map(data => {
         console.log(data);
-        return data
+        return data;
       }),
       catchError(err => {
         console.error(err);

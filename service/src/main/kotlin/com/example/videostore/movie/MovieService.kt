@@ -48,28 +48,28 @@ class MovieService(
 
         val result = RestTemplate().exchange(url, HttpMethod.GET, entity, String::class.java)
 
-        return mapper.readValue(result.body, Movie::class.java)
+        return mapper.readValue(result.body, Movie::class.java).also {
+            it.year.ifBlank { throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title") }
+        }
     }
 
     @Transactional
     fun addMovieByTitle(title: String, price: BigDecimal, quantity: Int): MovieDTO {
-        return getMovieByTitle(title).copy(price = price)
-            .apply {
-                if (this.title.isEmpty())
-                    throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title")
-            }
-            .let {
-                movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
-                    .apply { inventoryRepository.save(Inventory(movie = this, value = quantity)) }
-            }
-            .let {
-                MovieDTO(
-                    movie = it,
-                    inventory = inventoryRepository.findByMovie(it) ?: throw ResponseStatusException(
-                        NOT_FOUND, "Inventory for movie with id: ${it.id} not found"
-                    )
+        return getMovieByTitle(title).copy(price = price).also {
+            it.year.ifBlank { throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title") }
+        }
+        .let {
+            movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
+                .apply { inventoryRepository.save(Inventory(movie = this, value = quantity)) }
+        }
+        .let {
+            MovieDTO(
+                movie = it,
+                inventory = inventoryRepository.findByMovie(it) ?: throw ResponseStatusException(
+                    NOT_FOUND, "Inventory for movie with id: ${it.id} not found"
                 )
-            }
+            )
+        }
     }
 
     fun returnToInventory(movie: Movie, quantity: Int) {

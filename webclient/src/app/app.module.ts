@@ -22,6 +22,7 @@ import {MovieDialogComponent} from "./components/movie-dialog/movie-dialog.compo
 import {AdminPanelComponent} from './components/admin-panel/admin-panel.component';
 import {CartDialogComponent} from "./components/cart-dialog/cart-dialog.component";
 import {OrderHistoryLinesComponent} from "./components/order-history-lines/order-history-lines.component";
+import {AdminDialogComponent} from "./components/admin-dialog/admin-dialog.component";
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import {OrderHistoryLinesComponent} from "./components/order-history-lines/order
     OrderHistoryComponent,
     OrderHistoryLinesComponent,
     MovieDialogComponent,
-    AdminPanelComponent
+    AdminPanelComponent,
+    AdminDialogComponent
   ],
   imports: [
     BrowserModule,

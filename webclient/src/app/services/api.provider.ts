@@ -15,7 +15,7 @@ export class ApiProvider {
     history: () => `${this.host}/carts/historical`,
     finalize: (cartId: string) => `${this.host}/carts/finalize/${cartId}`,
     admin: (title: string, price: number = null, quantity: number = null) => {
-      let path = `${this.host}/admin?title=${title}`
+      let path = `${this.host}/movies/admin?title=${title}`
       if (price) {
         path = path.concat(`&price=${price}`)
       }

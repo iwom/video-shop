@@ -5,15 +5,28 @@
         <mat-card-title>Add movie to inventory</mat-card-title>
       </div>
       <mat-card-content>
-        <form [formGroup]="movieForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="movieForm" (ngSubmit)="onSubmit()" class="admin-card-form">
+          <div class="admin-card-autocomplete-content">
+            <mat-form-field class="admin-card-form-field">
+              <mat-label>Title</mat-label>
+              <input
+                [matAutocomplete]="movieAutocomplete" formControlName="title" required matInput
+                type="search" placeholder="Toy Story">
+            </mat-form-field>
+            <mat-autocomplete #movieAutocomplete="matAutocomplete">
+              <mat-option *ngFor="let option of options" [value]="option">
+                {{movie.title}} | {{movie.year}} | {{movie.genre}}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
           <div class="admin-card-content">
             <mat-form-field>
-              <mat-label>Title</mat-label>
-              <input formControlName="name" required matInput maxlength="10" placeholder="Toy Story">
+              <mat-label>Amount</mat-label>
+              <input formControlName="amount" required matInput type="number" min="0" maxlength="10" placeholder="25">
             </mat-form-field>
             <mat-form-field>
-              <mat-label>Amount</mat-label>
-              <input formControlName="amount" required matInput maxlength="10" placeholder="25">
+              <mat-label>Price</mat-label>
+              <input formControlName="price" required matInput min="0" maxlength="10" placeholder="11.99">
             </mat-form-field>
             <button mat-button type="submit" [disabled]="!movieForm.valid">Submit</button>
           </div>
