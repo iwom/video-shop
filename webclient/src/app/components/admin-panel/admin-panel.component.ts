@@ -43,7 +43,6 @@ export class AdminPanelComponent implements OnInit {
   onSubmit() {
     this.movieService.add(this.movieForm.value.title, this.movieForm.value.price, this.movieForm.value.amount)
       .subscribe(data => {
-        console.log(data);
         const dialogRef = this.dialog.open(AdminDialogComponent, {
           data: {
             movie: this.movie,
