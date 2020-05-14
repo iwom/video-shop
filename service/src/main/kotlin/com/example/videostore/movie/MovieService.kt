@@ -9,9 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy.UPPER_CAMEL_CASE
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
@@ -54,23 +57,24 @@ class MovieService(
     }
 
     @Transactional
-    fun addMovieByTitle(title: String, price: BigDecimal, quantity: Int): MovieDTO {
-        return getMovieByTitle(title).copy(price = price).also {
-            it.year.ifBlank { throw ResponseStatusException(NOT_FOUND, "Could not find film with title: $title") }
-        }
-        .let {
-            movieRepository.findByTitle(it.title) ?: movieRepository.save(it)
-                .apply { inventoryRepository.save(Inventory(movie = this, value = quantity)) }
-        }
-        .let {
+    fun addMovieByTitle(title: String, price: BigDecimal, quantity: Int): MovieDTO =
+        incrementMovieInventory(title, quantity) ?: createMovieInventory(title, price, quantity)
+
+    private fun incrementMovieInventory(title: String, quantity: Int): MovieDTO? =
+        movieRepository.findByTitle(title)?.let { movie ->
             MovieDTO(
-                movie = it,
-                inventory = inventoryRepository.findByMovie(it) ?: throw ResponseStatusException(
-                    NOT_FOUND, "Inventory for movie with id: ${it.id} not found"
-                )
+                movie = movie,
+                inventory = findInventoryOrElseCreateBy(movie).let { inventoryRepository.save(it.copy(value = it.value + quantity)) }
             )
         }
-    }
+
+    private fun createMovieInventory(title: String, price: BigDecimal, quantity: Int) =
+        getMovieByTitle(title).copy(price = price).let { movie ->
+            MovieDTO(movie = movie, inventory = inventoryRepository.save(Inventory(movie = movie, value = quantity)))
+        }
+
+    private fun findInventoryOrElseCreateBy(movie: Movie) =
+        (inventoryRepository.findByMovie(movie) ?: inventoryRepository.save(Inventory(movie = movie)))
 
     fun returnToInventory(movie: Movie, quantity: Int) {
         val inventory: Inventory = inventoryRepository.findByMovie(movie)
