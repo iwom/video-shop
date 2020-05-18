@@ -13,10 +13,10 @@ data class Inventory(
     @Column(columnDefinition = "uuid", updatable = false)
     val id: UUID = UUID.randomUUID(),
 
-    val value: Int = 10,
+    val value: Int = 0,
 
     @Id
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JsonIgnore
     val movie: Movie = Movie()
 )

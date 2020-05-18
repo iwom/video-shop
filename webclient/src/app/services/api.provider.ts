@@ -13,7 +13,17 @@ export class ApiProvider {
     carts: () => `${this.host}/carts`,
     cart: (cartId: string) => `${this.host}/carts/${cartId}`,
     history: () => `${this.host}/carts/historical`,
-    finalize: (cartId: string) => `${this.host}/carts/finalize/${cartId}`
+    finalize: (cartId: string) => `${this.host}/carts/finalize/${cartId}`,
+    admin: (title: string, price: number = null, quantity: number = null) => {
+      let path = `${this.host}/movies/admin?title=${title}`
+      if (price) {
+        path = path.concat(`&price=${price}`)
+      }
+      if (quantity) {
+        path = path.concat(`&quantity=${quantity}`)
+      }
+      return path
+    }
   };
 
   go() {

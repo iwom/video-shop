@@ -30,7 +30,31 @@ export class MovieService {
       }),
       catchError(err => {
         console.error(err);
-        return of({})
+        return err
+      })
+    )
+  }
+
+  public getByTitle(title: string): Observable<any> {
+    return this.http.get(this.api.go().admin(title)).pipe(
+      map(data => {
+        return new Movie(
+          data["id"], data["title"], data["year"], data["runtime"], data["genre"],
+          data["director"], data["actors"], data["plot"], data["poster"],
+          data["ratings"], data["price"], null)
+      }),
+      catchError(err => {
+        console.error(err);
+        return err
+      })
+    )
+  }
+
+  public add(title: string, price: number, quantity: number): Observable<any> {
+    return this.http.post(this.api.go().admin(title, price, quantity), {}).pipe(
+      catchError(err => {
+        console.error(err);
+        return err
       })
     )
   }

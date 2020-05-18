@@ -11,3 +11,17 @@
   display: flex;
   justify-content: space-evenly;
 }
+
+.admin-card-autocomplete-content {
+  display: block;
+  text-align: center;
+}
+
+.admin-card-form {
+  width: 100%;
+}
+
+.admin-card-form-field {
+  width: 100%;
+  max-width: 1100px;
+}
