@@ -51,7 +51,7 @@
             {{movie.price}} PLN
           </button>
           <button mat-button (click)="openDialog(movie)">More...</button>
-          <button mat-button *ngIf="isAdmin()" matTooltip="Order more" (click)="goToAdminPanel()">
+          <button mat-button *ngIf="isAdmin()" matTooltip="Order more" (click)="goToAdminPanel(movie)">
               {{movie.inventory}}
               <mat-icon>add_circle_outline</mat-icon>
           </button>
