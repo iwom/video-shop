@@ -151,7 +151,7 @@ export class MovieListComponent implements OnInit {
   }
 
   goToAdminPanel(movie: Movie) {
-    this.router.navigate(['/admin-panel'], {state: {'movie': movie.title}});
+    this.router.navigate(['/admin-panel'], {state: {'movie': movie.title, 'price': movie.price}});
   }
 }
 

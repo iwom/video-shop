@@ -30,12 +30,14 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   ) {
     const state = this.router.getCurrentNavigation().extras.state
     if (state) {
-      const title = state['movie']
-      this.movieForm.controls['title'].setValue(title)
+      const title = state['movie'];
+      const price = state['price'];
+      this.movieForm.controls['title'].setValue(title);
+      this.movieForm.controls['price'].setValue(price);
       this.movieService.getByTitle(title).subscribe(movie => {
         this.movie = movie;
         this.options = [movie.title];
-      })
+      });
     }
   }
 

@@ -12,6 +12,7 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent implements OnInit {
   loggedIn = false;
+  formValid = true;
   loginForm = new FormGroup({
     username: new FormControl(''),
     password: new FormControl('')
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.formValid = true;
     if (this.tokenStorageService.getToken()) {
       this.loggedIn = true;
     }
@@ -43,6 +45,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(["/movies"]);
       },
       err => {
+        this.formValid = false;
         console.error(err);
       }
     )
