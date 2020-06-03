@@ -7,3 +7,8 @@ html,body{
 .input-card-wrapper{
   padding: 4rem;
 }
+
+.input-invalid {
+  text-align: center;
+  color: #f44336;
+}

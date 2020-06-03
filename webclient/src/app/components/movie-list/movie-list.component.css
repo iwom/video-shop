@@ -36,13 +36,12 @@
 }
 
 
-.flex-container {
+.block-container {
   padding: 0;
   margin-left: 3rem;
   margin-right: 3rem;
   list-style: none;
-  display: flex;
-  justify-content: space-between;
+  display: block;
 }
 
 .form-full-width {
