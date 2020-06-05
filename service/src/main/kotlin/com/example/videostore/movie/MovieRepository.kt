@@ -6,7 +6,7 @@ import java.util.*
 
 interface MovieRepository : Repository<Movie, UUID> {
     companion object {
-        private const val FIND_QUERY = "SELECT * from movie where title ~* ?3 offset ?1 limit ?2"
+        private const val FIND_QUERY = "SELECT * from movie where title ~* ?3 order by title offset ?1 limit ?2"
         private const val COUNT_QUERY = "SELECT count(*) from movie where title ~* ?1"
     }
 

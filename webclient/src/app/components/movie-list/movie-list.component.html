@@ -3,7 +3,7 @@
     <form [formGroup]="movieSearchForm" class="form-full-width">
       <div>
         <mat-form-field class="form-field-full-width">
-          <mat-label>Title</mat-label>
+          <mat-label>Search by title</mat-label>
           <input formControlName="name" type="search" matInput maxlength="10" placeholder="Toy Story">
         </mat-form-field>
       </div>
@@ -18,7 +18,7 @@
   </li>
 </ul>
 
-<mat-grid-list [cols]="breakpoint" rowHeight="1:1" (window:resize)="onResize($event)">
+<mat-grid-list [cols]="breakpoint" rowHeight="19:20" (window:resize)="onResize($event)">
   <mat-grid-tile *ngFor="let movie of movieList">
     <div>
       <mat-card class="card">

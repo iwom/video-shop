@@ -1,0 +1,1 @@
+alter table movie alter column price type numeric(6,2);
