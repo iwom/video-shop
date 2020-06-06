@@ -95,7 +95,7 @@ export class MovieListComponent implements OnInit {
     ).subscribe(_ => {
       this.snackBar.open("\'" + movie.title + "\' added to cart", "Dismiss", {duration: 3000});
     });
-    this.movieService.fetch(this.pageSize, 0, this.searchText).subscribe(
+    this.movieService.fetch(this.pageSize, this.pageIndex * this.pageSize, this.searchText).subscribe(
       data => {
         this.movieList = data.movies;
         this.length = data.count;
